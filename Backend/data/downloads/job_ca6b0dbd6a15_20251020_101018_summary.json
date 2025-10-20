@@ -1,0 +1,17 @@
+{
+  "job_id": "job_ca6b0dbd6a15",
+  "query": "generative artificial intelligence",
+  "sources": [
+    "crossref"
+  ],
+  "max_results_per_source": 30,
+  "status": "running",
+  "progress": 0.0,
+  "current_source": "crossref",
+  "total_downloaded": 30,
+  "total_unique": 29,
+  "total_duplicates": 1,
+  "started_at": "2025-10-20T10:10:14.676545",
+  "completed_at": null,
+  "errors": []
+}
