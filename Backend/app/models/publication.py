@@ -251,8 +251,9 @@ class Publication(BaseModel):
         """Valida y limpia el abstract."""
         if not v or not v.strip():
             raise ValueError("El abstract no puede estar vacío")
-        if len(v.strip()) < 50:
-            raise ValueError("El abstract debe tener al menos 50 caracteres")
+        # Cambiado de 50 a 10 caracteres mínimos para abstracts cortos
+        if len(v.strip()) < 10:
+            raise ValueError("El abstract debe tener al menos 10 caracteres")
         return v.strip()
     
     @field_validator('keywords')

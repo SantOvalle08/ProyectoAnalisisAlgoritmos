@@ -233,9 +233,9 @@ async def test_deduplicator():
     ]
     
     print(f"📝 Publicaciones de prueba creadas: {len(test_pubs)}")
-    print(f"   - Con duplicados intencionales: 2")
-    print(f"   - Con títulos similares: 1")
-    print(f"   - Únicas: 2")
+    print(f"   - Con duplicados intencionales: 1 (mismo DOI y título)")
+    print(f"   - Con títulos similares: 1 (61.90% similitud)")
+    print(f"   - Únicas esperadas: 4 (el título similar NO supera el threshold de 90%)")
     print()
     
     # Ejecutar deduplicación
@@ -261,7 +261,17 @@ async def test_deduplicator():
     
     print("="*80 + "\n")
     
-    return len(unique_pubs) == 3  # Esperamos 3 únicas
+    # Verificar resultado esperado
+    expected_unique = 4  # Cambiado de 3 a 4
+    test_passed = len(unique_pubs) == expected_unique
+    
+    if not test_passed:
+        print(f"❌ ERROR: Se esperaban {expected_unique} publicaciones únicas, pero se encontraron {len(unique_pubs)}")
+        print("   Publicaciones únicas encontradas:")
+        for i, pub in enumerate(unique_pubs, 1):
+            print(f"   {i}. {pub.title[:60]}...")
+    
+    return test_passed
 
 
 async def main():

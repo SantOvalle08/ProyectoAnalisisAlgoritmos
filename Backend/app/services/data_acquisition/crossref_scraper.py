@@ -258,10 +258,19 @@ class CrossRefScraper(BaseScraper):
                 author_name = f"{author_data.get('given', '')} {author_data.get('family', '')}".strip()
                 
                 if author_name:
+                    # Extraer ORCID y limpiar URLs
+                    orcid = None
+                    if 'ORCID' in author_data:
+                        orcid_raw = author_data['ORCID']
+                        # Remover todas las variantes de URL
+                        orcid = orcid_raw.replace('https://orcid.org/', '') \
+                                        .replace('http://orcid.org/', '') \
+                                        .strip()
+                    
                     author = Author(
                         name=author_name,
                         affiliation=self._extract_affiliation(author_data),
-                        orcid=author_data.get('ORCID', '').replace('http://orcid.org/', '') if 'ORCID' in author_data else None
+                        orcid=orcid
                     )
                     authors.append(author)
             

@@ -26,7 +26,7 @@ Implementar una plataforma web automatizada para análisis bibliométrico avanza
 - [x] Sistema de logging y manejo de errores
 
 ### ⏳ Pendiente de Implementación
-- [ ] Requerimiento 1: Automatización de descarga de datos
+- [x] Requerimiento 1: Automatización de descarga de datos
 - [ ] Requerimiento 2: Algoritmos de similitud textual
 - [ ] Requerimiento 3: Análisis de frecuencias de conceptos
 - [ ] Requerimiento 4: Clustering jerárquico y dendrogramas
