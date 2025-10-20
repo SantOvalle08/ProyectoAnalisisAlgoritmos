@@ -22,6 +22,8 @@ from .levenshtein import LevenshteinSimilarity
 from .tfidf_cosine import TFIDFCosineSimilarity
 from .jaccard import JaccardSimilarity
 from .ngrams import NGramSimilarity
+from .bert_embeddings import BERTEmbeddingsSimilarity
+from .sentence_bert import SentenceBERTSimilarity
 
 __all__ = [
     "BaseSimilarity",
@@ -30,4 +32,6 @@ __all__ = [
     "TFIDFCosineSimilarity",
     "JaccardSimilarity",
     "NGramSimilarity",
+    "BERTEmbeddingsSimilarity",
+    "SentenceBERTSimilarity",
 ]
