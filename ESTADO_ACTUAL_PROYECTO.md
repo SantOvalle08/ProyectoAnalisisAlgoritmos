@@ -9,15 +9,15 @@
 
 ## RESUMEN EJECUTIVO
 
-### Progreso General: 50% completado
+### Progreso General: 67% completado
 
 **Requerimientos completados:**
 - Requerimiento 1: 100% (Automatización de descarga de datos)
 - Requerimiento 2: 100% (Algoritmos de similitud textual)
 - Requerimiento 3: 100% (Análisis de frecuencias de conceptos)
+- Requerimiento 4: 100% (Clustering jerárquico)
 
 **Requerimientos pendientes:**
-- Requerimiento 4: 0% (Clustering jerárquico)
 - Requerimiento 5: 0% (Visualizaciones)
 - Requerimiento 6: 0% (Despliegue y documentación)
 
@@ -437,20 +437,199 @@
 
 ---
 
-## REQUERIMIENTO 4: CLUSTERING JERÁRQUICO - PENDIENTE
+## REQUERIMIENTO 4: CLUSTERING JERÁRQUICO - COMPLETADO
 
-### Estado: 0% Implementado
+### Estado: 100% Implementado y Probado
 
-#### Objetivos:
+#### Componentes Implementados:
 
-1. Implementar 3 algoritmos de clustering jerárquico
-2. Generar dendrogramas
-3. Comparar coherencia de agrupamientos
+1. **Clase HierarchicalClustering** (`Backend/app/services/ml_analysis/clustering/hierarchical_clustering.py` - 650+ líneas)
+   
+   **Enumeraciones y Modelos:**
+   - `LinkageMethod`: Enum con los 3 métodos (WARD, AVERAGE, COMPLETE)
+   - `ClusteringResult`: Dataclass con resultados completos del clustering
+   
+   **Métodos Principales:**
+   - `preprocess_texts()`: Vectorización TF-IDF de abstracts
+     - max_features=1000, ngram_range=(1,3)
+     - Tokenización y limpieza automática
+     - Retorna matriz dispersa de features
+   
+   - `compute_distance_matrix()`: Cálculo de matriz de distancias
+     - Métrica: distancia coseno (1 - similitud coseno)
+     - Optimizada con scipy.spatial.distance
+     - Validación de matriz cuadrada simétrica
+   
+   - `apply_clustering()`: Aplicación de algoritmo jerárquico
+     - 3 métodos implementados: Ward, Average, Complete
+     - Retorna linkage matrix (n-1 pasos de fusión)
+     - Validación de coherencia estructural
+   
+   - `calculate_cophenetic_correlation()`: Medida de fidelidad del dendrograma
+     - Rango: [0, 1], valores cercanos a 1 indican mejor representación
+     - Compara distancias originales vs distancias cofenéticas
+   
+   - `cut_tree()`: Corte del árbol en k clusters
+     - Asigna etiqueta de cluster a cada documento
+     - Validación de número de clusters
+   
+   - `evaluate_clustering()`: Evaluación de calidad
+     - **Silhouette Score**: [-1, 1], mayor es mejor
+       - Mide cohesión intra-cluster vs separación inter-cluster
+       - Fórmula: s(i) = (b(i) - a(i)) / max(a(i), b(i))
+     - **Davies-Bouldin Index**: [0, ∞), menor es mejor
+       - Promedio de similitud máxima entre clusters
+       - Fórmula: DB = (1/k) Σ max_j≠i (σ_i + σ_j) / d(c_i, c_j)
+     - **Calinski-Harabasz Index**: [0, ∞), mayor es mejor
+       - Ratio de dispersión inter-cluster vs intra-cluster
+       - Fórmula: CH = (tr(B_k) / tr(W_k)) * ((n-k) / (k-1))
+   
+   - `generate_dendrogram()`: Generación de visualización
+     - Usa matplotlib con backend Agg (server-side)
+     - Retorna imagen en base64 (PNG)
+     - Personalizable con etiquetas de documentos
+   
+   - `cluster_texts()`: Pipeline completo de 4 pasos
+     - Paso 1: Preprocesamiento (TF-IDF)
+     - Paso 2: Cálculo de similitud (distancia coseno)
+     - Paso 3: Aplicación de clustering jerárquico
+     - Paso 4: Generación de dendrograma
+   
+   - `compare_methods()`: Comparación de los 3 algoritmos
+     - Ejecuta Ward, Average y Complete en paralelo
+     - Compara métricas de calidad
+     - Retorna recomendación del mejor método
+   
+   - `_determine_best_method()`: Scoring ponderado automático
+     - Correlación cofenética: peso 40%
+     - Silhouette Score: peso 30%
+     - Davies-Bouldin (invertido): peso 15%
+     - Calinski-Harabasz (normalizado): peso 15%
 
-**Algoritmos a implementar:**
-- Ward Linkage
-- Average Linkage
-- Complete Linkage
+2. **Algoritmos Implementados (3 métodos de linkage):**
+
+   **a) Ward Linkage:**
+   - Minimiza la suma de cuadrados dentro de cada cluster
+   - Fórmula: d(A,B) = sqrt(|A||B| / (|A| + |B|)) * ||mean(A) - mean(B)||
+   - Produce clusters balanceados y compactos
+   - Recomendado cuando se espera clusters de tamaño similar
+   - Implementación: `scipy.cluster.hierarchy.ward()`
+   
+   **b) Average Linkage (UPGMA):**
+   - Promedio de todas las distancias entre pares de elementos
+   - Fórmula: d(A,B) = (1 / |A||B|) * Σ Σ d(a,b) para a∈A, b∈B
+   - Balance entre Ward y Complete
+   - Menos sensible a outliers que Complete Linkage
+   - Implementación: `scipy.cluster.hierarchy.average()`
+   
+   **c) Complete Linkage:**
+   - Máxima distancia entre cualquier par de elementos
+   - Fórmula: d(A,B) = max{d(a,b) : a∈A, b∈B}
+   - Produce clusters muy compactos
+   - Evita cadenas largas de elementos (efecto "chaining")
+   - Implementación: `scipy.cluster.hierarchy.complete()`
+
+3. **API REST** (`Backend/app/api/v1/clustering.py` - 450+ líneas)
+   
+   **Endpoints implementados (4 total):**
+   
+   - `POST /api/v1/clustering/hierarchical` - Ejecutar clustering
+     - Input: lista de abstracts, método, num_clusters (opcional)
+     - Output: linkage matrix, métricas de calidad, dendrograma
+     - Parámetros: generate_dendrogram (bool), labels (opcional)
+     - Validación: mínimo 2 abstracts, máximo 1000
+   
+   - `POST /api/v1/clustering/compare-methods` - Comparar 3 métodos
+     - Input: lista de abstracts, num_clusters (opcional)
+     - Output: resultados de Ward, Average y Complete
+     - Incluye recomendación automática del mejor método
+     - Métricas comparativas: correlación, silhouette, davies-bouldin
+   
+   - `GET /api/v1/clustering/methods` - Listar métodos disponibles
+     - Output: información detallada de los 3 métodos
+     - Incluye fórmulas matemáticas y casos de uso
+     - Documentación completa de cada algoritmo
+   
+   - `GET /api/v1/clustering/health` - Health check
+     - Verifica inicialización del sistema
+     - Retorna configuración activa (max_features, ngram_range)
+   
+   **Modelos Pydantic:**
+   - `ClusteringRequest`: Validación de peticiones de clustering
+   - `CompareMethodsRequest`: Validación de comparación de métodos
+   - `ClusteringResponse`: Estructura de respuesta de clustering
+   - `ComparisonResponse`: Estructura de respuesta de comparación
+
+#### Pruebas Realizadas:
+
+**Tests Unitarios** (`Backend/test_clustering.py` - 450+ líneas):
+- Test 1: Inicialización de HierarchicalClustering - PASO
+- Test 2: Preprocesamiento con TF-IDF (10 docs → matriz) - PASO
+- Test 3: Cálculo de matriz de distancias (45 pares) - PASO
+- Test 4: Clustering con Ward Linkage - PASO
+- Test 5: Clustering con Average Linkage - PASO
+- Test 6: Clustering con Complete Linkage - PASO
+- Test 7: Corte de árbol y asignación de clusters - PASO
+- Test 8: Evaluación de calidad (3 métricas) - PASO
+- Test 9: Proceso completo de clustering (4 pasos) - PASO
+- Test 10: Comparación de los 3 métodos - PASO
+
+**Resultado:** 10/10 tests pasaron (100%)
+
+**Tests de API** (`Backend/quick_test_clustering.py`):
+- Health check: 200 OK - Sistema inicializado correctamente
+- Listar métodos: 200 OK - 3 métodos disponibles
+- Clustering Ward: 200 OK - Dendrograma generado (50K+ chars base64)
+- Comparar métodos: 200 OK - Mejor método seleccionado automáticamente
+
+**Ejemplo de Resultados Reales:**
+```
+Documentos procesados: 5
+Features extraídas: 82
+Correlación cofenética (Ward): 0.8017
+Correlación cofenética (Average): 0.8231  ← Mejor método
+Correlación cofenética (Complete): 0.8044
+Silhouette Score: 0.0141
+Clusters formados: [2, 2, 1, 1, 2]
+Dendrograma: Imagen PNG en base64
+```
+
+#### Documentación Matemática:
+
+**Distancia Coseno:**
+```
+d(x, y) = 1 - cos(θ) = 1 - (x·y) / (||x|| ||y||)
+```
+
+**Silhouette Score para punto i:**
+```
+a(i) = promedio de distancias intra-cluster
+b(i) = mínimo promedio de distancias inter-cluster
+s(i) = (b(i) - a(i)) / max(a(i), b(i))
+```
+
+**Davies-Bouldin Index:**
+```
+σ_i = dispersión promedio del cluster i
+d(c_i, c_j) = distancia entre centroides
+DB = (1/k) Σ_{i=1}^k max_{j≠i} (σ_i + σ_j) / d(c_i, c_j)
+```
+
+**Calinski-Harabasz Index:**
+```
+B_k = matriz de dispersión inter-cluster
+W_k = matriz de dispersión intra-cluster
+CH = [tr(B_k) / tr(W_k)] * [(n-k) / (k-1)]
+```
+
+#### Integración con Backend:
+
+- Router registrado en `main.py`
+- Prefijo: `/api/v1/clustering`
+- Tag: "Clustering"
+- Documentación automática en Swagger UI
+- Instancia global singleton de HierarchicalClustering
+- Inicialización lazy (primera llamada)
 
 ---
 
@@ -529,12 +708,16 @@ Backend/
 │   │   │   │   ├── ngrams.py               (COMPLETO)
 │   │   │   │   ├── bert_embeddings.py      (COMPLETO)
 │   │   │   │   └── sentence_bert.py        (COMPLETO)
-│   │   │   └── frequency/
-│   │   │       └── concept_analyzer.py     (VACÍO - PENDIENTE)
+│   │   │   ├── frequency/
+│   │   │   │   └── concept_analyzer.py     (COMPLETO)
+│   │   │   └── clustering/
+│   │   │       └── hierarchical_clustering.py (COMPLETO)
 │   ├── api/
 │   │   └── v1/
 │   │       ├── data_acquisition.py  (COMPLETO - 9 endpoints)
-│   │       └── similarity.py        (COMPLETO - 6 endpoints)
+│   │       ├── similarity.py        (COMPLETO - 6 endpoints)
+│   │       ├── frequency.py         (COMPLETO - 7 endpoints)
+│   │       └── clustering.py        (COMPLETO - 4 endpoints)
 │   └── config/
 │       ├── concepts.py              # Conceptos predefinidos
 │       └── settings.py              # Configuración general
@@ -543,7 +726,9 @@ Backend/
 │   ├── test_similitud.py            (COMPLETO - 4 algoritmos)
 │   ├── test_similitud_completo.py   (COMPLETO - 6 algoritmos)
 │   ├── test_api_similitud.py        (COMPLETO - API tests)
-│   └── test_frequency.py            (VACÍO - PENDIENTE)
+│   ├── test_frequency.py            (COMPLETO - 10 tests)
+│   ├── test_api_frequency.py        (COMPLETO - 12 tests)
+│   └── test_clustering.py           (COMPLETO - 10 tests)
 └── data/                            # Directorio para datos descargados
 ```
 
@@ -561,39 +746,40 @@ Backend/
 
 ## PRÓXIMOS PASOS INMEDIATOS
 
-### Prioridad 1: Completar Requerimiento 4 (Clustering Jerárquico)
+### Prioridad 1: Completar Requerimiento 5 (Visualizaciones)
 
-**Objetivo:** Implementar 3 algoritmos de clustering jerárquico para agrupar publicaciones similares.
+**Objetivo:** Implementar 4 tipos de visualizaciones interactivas para análisis bibliométrico.
 
-**Paso 1:** Implementar Algoritmos de Clustering
-- Crear clase `HierarchicalClustering` en `Backend/app/services/ml_analysis/clustering/`
-- Implementar Ward Linkage
-- Implementar Average Linkage
-- Implementar Complete Linkage
-- Generar dendrogramas con matplotlib/scipy
+**Paso 1:** Mapa de Calor Geográfico
+- Crear clase `GeographicHeatmap` en `Backend/app/services/visualization/`
+- Extraer país del primer autor de cada publicación
+- Generar mapa interactivo con plotly/folium
+- API endpoint: `POST /api/v1/visualizations/heatmap`
 
-**Paso 2:** Crear API REST para clustering
-- Nuevo archivo: `Backend/app/api/v1/clustering.py`
-- Endpoint: `POST /api/v1/clustering/hierarchical` - Ejecutar clustering
-- Endpoint: `GET /api/v1/clustering/methods` - Listar métodos disponibles
-- Endpoint: `POST /api/v1/clustering/dendrogram` - Generar dendrograma
+**Paso 2:** Nube de Palabras Dinámica
+- Crear clase `WordCloudGenerator` en `Backend/app/services/visualization/`
+- Combinar abstracts y keywords de publicaciones
+- Generar word cloud con wordcloud library
+- API endpoint: `POST /api/v1/visualizations/wordcloud`
 
-**Paso 3:** Implementar tests
-- Crear `Backend/test_clustering.py`
-- Validar correctitud de agrupamientos
-- Comparar coherencia entre algoritmos
-- Verificar generación de dendrogramas
+**Paso 3:** Línea Temporal de Publicaciones
+- Crear clase `TimelineChart` en `Backend/app/services/visualization/`
+- Agrupar publicaciones por año y revista
+- Generar gráfico interactivo con plotly
+- API endpoint: `POST /api/v1/visualizations/timeline`
 
-**Paso 4:** Integrar con datos reales
-- Usar vectores de Sentence-BERT de publicaciones
-- Generar clusters basados en similitud semántica
-- Exportar dendrogramas como imágenes
+**Paso 4:** Exportación a PDF
+- Crear clase `PDFExporter` en `Backend/app/services/visualization/`
+- Combinar las 3 visualizaciones en un documento PDF
+- Usar reportlab o weasyprint
+- API endpoint: `POST /api/v1/visualizations/export-pdf`
 
 **Estimación de tiempo:**
-- Implementación: 3-4 horas
+- Implementación: 4-5 horas
 - Testing: 1-2 horas
 - Documentación: 1 hora
-- Total: 5-7 horas
+- Total: 6-8 horas
+
 
 ### Prioridad 2: Desarrollar Requerimiento 5 (Visualizaciones)
 
@@ -648,35 +834,52 @@ No es necesario descargar nuevamente en ejecuciones futuras.
 ## CONCLUSIONES
 
 **Estado general del proyecto:**
-- Progreso sólido: 3 de 6 requerimientos completados (50%)
-- Infraestructura robusta: API REST funcional con 3 módulos operativos
-- Testing exhaustivo: 100% de tests pasando en todos los módulos
-- Próximo objetivo: Clustering jerárquico (Requerimiento 4)
+- Progreso sólido: 4 de 6 requerimientos completados (67%)
+- Infraestructura robusta: API REST funcional con 4 módulos operativos
+- Testing exhaustivo: 100% de tests pasando en todos los módulos (42 tests totales)
+- Próximo objetivo: Visualizaciones interactivas (Requerimiento 5)
 
 **Requerimientos Completados:**
 1. Automatización de descarga de datos (CrossRef funcional, 30+ publicaciones)
 2. Algoritmos de similitud textual (6 algoritmos implementados y benchmarked)
 3. Análisis de frecuencias (15 conceptos predefinidos + extracción automática)
+4. Clustering jerárquico (3 algoritmos: Ward, Average, Complete + dendrogramas)
 
 **Fortalezas:**
 - Código bien estructurado con separación clara de responsabilidades
-- API REST completa con 20+ endpoints funcionales
-- Tests exhaustivos con 100% de éxito en todos los módulos
-- Documentación detallada de todos los componentes
-- Performance optimizado (TF-IDF: 0.003s, Sentence-BERT: 0.03s cacheado)
+- API REST completa con 26 endpoints funcionales
+- Tests exhaustivos: 42 tests totales, 100% de éxito
+  - 10 tests unitarios de clustering
+  - 12 tests de API de frecuencias
+  - 10 tests unitarios de frecuencias
+  - 10 tests de API de similitud
+- Documentación matemática detallada de todos los algoritmos
+- Performance optimizado:
+  - TF-IDF: 0.003s
+  - Sentence-BERT: 0.03s (cacheado)
+  - Clustering (5 docs): <1s
+  - Dendrograma generado: base64 PNG
 
 **Áreas de mejora:**
-- Completar scrapers de ACM, SAGE y ScienceDirect (pendiente)
-- Implementar clustering jerárquico (Requerimiento 4)
-- Desarrollar sistema de visualizaciones (Requerimiento 5)
+- Completar scrapers de ACM, SAGE y ScienceDirect (opcional)
+- Desarrollar sistema de visualizaciones (Requerimiento 5) - PRÓXIMO
 - Preparar despliegue y documentación final (Requerimiento 6)
 
 **Próximos pasos críticos:**
-1. Implementar Ward, Average y Complete Linkage para clustering
-2. Generar dendrogramas interactivos
-3. Crear visualizaciones (mapa de calor, nube de palabras, timeline)
-4. Dockerizar y preparar deployment
+1. Implementar mapa de calor geográfico (distribución de autores)
+2. Generar nube de palabras dinámica (keywords + abstracts)
+3. Crear línea temporal de publicaciones (por año y revista)
+4. Sistema de exportación a PDF (combinar las 3 visualizaciones)
+5. Dockerizar y preparar deployment
+
+**Métricas del Proyecto:**
+- Líneas de código: ~8,000+
+- Archivos creados: 35+
+- Módulos ML/NLP: 10 (6 similitud + 1 frecuencias + 3 clustering)
+- Endpoints API: 26 (9 data + 6 similarity + 7 frequency + 4 clustering)
+- Tests implementados: 42 (100% passing)
+- Cobertura de requerimientos: 67% (4/6 completados)
 
 ---
 
-**Última actualización:** 23 de Octubre de 2025, 12:50 PM
+**Última actualización:** 23 de Octubre de 2025, 5:15 PM
