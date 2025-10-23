@@ -344,6 +344,14 @@ async def compare_texts(request: CompareRequest):
     Compara dos textos usando TODOS los 6 algoritmos disponibles.
     Útil para comparar rendimiento y resultados entre diferentes enfoques.
     
+    **Ejemplo de uso:**
+    ```json
+    {
+      "text1": "Generative AI in education",
+      "text2": "AI-powered educational tools"
+    }
+    ```
+    
     **Ejemplo de respuesta:**
     ```json
     {
@@ -357,20 +365,18 @@ async def compare_texts(request: CompareRequest):
     ```
     """
 )
-async def compare_all_algorithms(
-    text1: str = Query(..., min_length=1, max_length=10000),
-    text2: str = Query(..., min_length=1, max_length=10000)
-):
+async def compare_all_algorithms(request: CompareRequest):
     """
     Compara dos textos con todos los algoritmos disponibles.
     
     Args:
-        text1: Primer texto
-        text2: Segundo texto
+        request: Datos de la petición (text1 y text2)
     
     Returns:
         Diccionario con resultados de cada algoritmo
     """
+    text1 = request.text1
+    text2 = request.text2
     import time
     
     try:

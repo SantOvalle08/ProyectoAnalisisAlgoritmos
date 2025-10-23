@@ -1,33 +1,149 @@
-# 📋 PLAN DE IMPLEMENTACIÓN DETALLADO
-## Proyecto de Análisis Bibliométrico - Universidad del Quindío
+# 📋 PLAN DE IMPLEMENTACIÓN - PROYECTO BIBLIOMÉTRICO# 📋 PLAN DE IMPLEMENTACIÓN - ACTUALIZADO# 📋 PLAN DE IMPLEMENTACIÓN DETALLADO
+
+
+
+**Universidad del Quindío - Análisis de Algoritmos (2025-2)**  ## Proyecto de Análisis Bibliométrico - Universidad del Quindío## Proyecto de Análisis Bibliométrico - Universidad del Quindío
 
 **Autores:** Santiago Ovalle Cortés, Juan Sebastián Noreña  
-**Curso:** Análisis de Algoritmos (2025-2)  
-**Fecha de inicio:** 20 de Octubre, 2025  
+
+**Última actualización:** 23 de Enero, 2025  
+
 **Dominio:** Inteligencia Artificial Generativa en Educación  
-**Cadena de búsqueda:** "generative artificial intelligence"
 
----
+**Cadena de búsqueda:** "generative artificial intelligence"**Autores:** Santiago Ovalle Cortés, Juan Sebastián Noreña  **Autores:** Santiago Ovalle Cortés, Juan Sebastián Noreña  
 
-## 🎯 OBJETIVO GENERAL
 
-Implementar una plataforma web automatizada para análisis bibliométrico avanzado de publicaciones científicas sobre IA Generativa, integrando algoritmos clásicos y modernos de ML/NLP, con capacidades de visualización interactiva y exportación de resultados.
 
----
+---**Curso:** Análisis de Algoritmos (2025-2)  **Curso:** Análisis de Algoritmos (2025-2)  
 
-## 📊 ESTADO ACTUAL DEL PROYECTO
 
-### ✅ Infraestructura Completada
-- [x] Estructura de directorios Backend y Frontend
-- [x] FastAPI configurado con CORS y middlewares
-- [x] Dependencias Python instaladas (requirements.txt)
-- [x] Aplicación React con TypeScript y Vite
-- [x] Dependencias frontend (MUI, D3, Plotly, Recharts)
+
+## 🎯 OBJETIVO GENERAL**Última actualización:** 23 de Enero, 2025  **Fecha de inicio:** 20 de Octubre, 2025  
+
+
+
+Implementar una plataforma web automatizada para análisis bibliométrico de publicaciones científicas sobre IA Generativa, integrando algoritmos clásicos y modernos de ML/NLP, con capacidades de visualización interactiva y exportación de resultados.**Dominio:** Inteligencia Artificial Generativa en Educación  **Dominio:** Inteligencia Artificial Generativa en Educación  
+
+
+
+---**Cadena de búsqueda:** "generative artificial intelligence"**Cadena de búsqueda:** "generative artificial intelligence"
+
+
+
+## 📊 ESTADO ACTUAL DEL PROYECTO (23 de Enero, 2025)
+
+
+
+### ✅ COMPLETADO (40%)------
+
+
+
+#### **✅ Requerimiento 2: Algoritmos de Similitud Textual** (100%)
+
+- ✅ 6 algoritmos implementados: Levenshtein, TF-IDF + Coseno, Jaccard, N-gramas, BERT, Sentence-BERT
+
+- ✅ 8 endpoints REST funcionales con documentación OpenAPI## 🎯 OBJETIVO GENERAL## 🎯 OBJETIVO GENERAL
+
+- ✅ Suite de tests completa (26 tests pasando)
+
+- ✅ Documentación matemática paso a paso para cada algoritmo
+
+- ✅ UI capaz de comparar abstracts de publicaciones
+
+Implementar una plataforma web automatizada para análisis bibliométrico avanzado de publicaciones científicas sobre IA Generativa, integrando algoritmos clásicos y modernos de ML/NLP, con capacidades de visualización interactiva y exportación de resultados.Implementar una plataforma web automatizada para análisis bibliométrico avanzado de publicaciones científicas sobre IA Generativa, integrando algoritmos clásicos y modernos de ML/NLP, con capacidades de visualización interactiva y exportación de resultados.
+
+**Archivos:**
+
+- `app/services/ml_analysis/similarity/` - 7 módulos (1,800 líneas)
+
+- `app/api/v1/similarity.py` - 742 líneas
+
+- `tests/test_similarity_*.py` - 26 tests------
+
+
+
+#### **✅ Parsers Bibliográficos** (100%)
+
+- ✅ BibTeX Parser con manejo robusto de braces anidados
+
+- ✅ RIS Parser con soporte completo de tags## 📊 ESTADO ACTUAL DEL PROYECTO## 📊 ESTADO ACTUAL DEL PROYECTO
+
+- ✅ CSV Parser con normalización flexible
+
+- ✅ Unificador automático con detección de formatos
+
+- ✅ Suite de tests completa (7 tests pasando)
+
+### ✅ **Completado (33%)**### ✅ Infraestructura Completada
+
+**Archivos:**
+
+- `app/services/data_acquisition/parsers/` - 4 módulos (1,380 líneas)- [x] Estructura de directorios Backend y Frontend
+
+- `test_parsers.py` - 7 tests
+
+#### **Requerimiento 2: Algoritmos de Similitud Textual** ✅- [x] FastAPI configurado con CORS y middlewares
+
+#### **⚙️ Infraestructura Base** (100%)
+
+- ✅ FastAPI con CORS y middlewares- [x] 6 algoritmos implementados (Levenshtein, TF-IDF, Jaccard, N-gramas, BERT, Sentence-BERT)- [x] Dependencias Python instaladas (requirements.txt)
+
+- ✅ Estructura modular Backend + Frontend
+
+- ✅ Sistema de logging y manejo de errores- [x] 8 endpoints REST funcionales- [x] Aplicación React con TypeScript y Vite
+
+- ✅ Dependencias instaladas (requirements.txt con 79 paquetes)
+
+- ✅ .gitignore configurado- [x] Suite de tests completa (32/32 pasando)- [x] Dependencias frontend (MUI, D3, Plotly, Recharts)
+
+- ✅ Tests automatizados (pytest)
+
+### ✅ **Completado (45%)**
+
+#### **Requerimiento 2: Algoritmos de Similitud Textual** ✅
+
+- [x] 6 algoritmos implementados (Levenshtein, TF-IDF, Jaccard, N-gramas, BERT, Sentence-BERT)
+- [x] 8 endpoints REST funcionales
+- [x] Suite de tests completa (39/39 pasando)
+- [x] Documentación matemática integrada
 - [x] Sistema de logging y manejo de errores
 
-### ⏳ Pendiente de Implementación
-- [x] Requerimiento 1: Automatización de descarga de datos
-- [ ] Requerimiento 2: Algoritmos de similitud textual
+- **Archivos:** 7 módulos de similitud + 3 archivos de tests (2,500 líneas)
+
+---
+
+#### **Requerimiento 1: Automatización de Descarga** ✅
+
+**Implementado:**
+- ✅ **ACM Digital Library Scraper** - Web scraping con BeautifulSoup (450 líneas)
+- ✅ **SAGE Journals Scraper** - Multi-selector CSS (448 líneas)
+- ✅ **ScienceDirect Scraper** - API de Elsevier con mock data (580 líneas)
+- ✅ **CrossRefScraper** - API de CrossRef totalmente funcional
+- ✅ **Sistema de deduplicación** - DOI, hash MD5, fuzzy matching
+- ✅ **UnifiedDownloader** - Coordinador de múltiples fuentes
+- ✅ **Suite completa de tests** - 17/18 tests pasando (1 skipped)
+- ✅ **8 Endpoints API de descarga** - `/api/v1/data/*`
+
+**Archivos:**
+- `app/services/data_acquisition/*.py` - 2,400 líneas
+- `test_data_acquisition.py` - 450 líneas (18 tests)
+
+---
+
+#### **Requerimiento 6: Parsers Bibliográficos** ✅
+
+- [x] BibTeXParser con manejo robusto de braces anidados
+- [x] RISParser con soporte completo de tags
+- [x] CSVParser con normalización flexible
+- [x] PublicationUnifier con auto-detección de formatos
+- [x] Suite de tests completa (7/7 pasando)
+
+- **Archivos:** 4 parsers + 1 archivo de tests (1,380 líneas)
+
+---
+
+### ⏳ Pendiente de Implementación (55%)
+
 - [ ] Requerimiento 3: Análisis de frecuencias de conceptos
 - [ ] Requerimiento 4: Clustering jerárquico y dendrogramas
 - [ ] Requerimiento 5: Visualizaciones interactivas
@@ -37,244 +153,888 @@ Implementar una plataforma web automatizada para análisis bibliométrico avanza
 
 ## 🗓️ CRONOGRAMA DE IMPLEMENTACIÓN
 
-### **Fase 1: Requerimiento 1 - Automatización de Descarga** (5 días)
-- Días 1-2: Scrapers y conectores API
-- Día 3: Unificación y eliminación de duplicados
-- Días 4-5: Testing y validación
+### **Fase 1: Requerimiento 1 - Automatización de Descarga** ✅ COMPLETADO
 
-### **Fase 2: Requerimiento 2 - Similitud Textual** (7 días)
-- Días 6-7: Algoritmos clásicos (Levenshtein, TF-IDF, Jaccard, N-gramas)
-- Días 8-9: Algoritmos con IA (BERT, Sentence-BERT)
-- Días 10-11: Documentación matemática detallada
-- Día 12: UI para comparación de abstracts
+- ✅ Días 1-2: Scrapers (ACM, SAGE, ScienceDirect) y conectores API
+- ✅ Día 3: Unificación y eliminación de duplicados
+- ✅ Días 4-5: Testing y validación (56/57 tests pasando)
 
-### **Fase 3: Requerimiento 3 - Frecuencias de Conceptos** (4 días)
-- Día 13: Análisis de frecuencias de categorías predefinidas
-- Día 14: Generación automática de palabras asociadas con NLP
+- ❌ Cálculo de precisión de palabras generadas
+
+- ❌ Visualización de frecuencias- [ ] Endpoints REST
+
+
+
+**Categoría a analizar:**- **Prioridad:** ALTA | **Estimado:** 6 horas### **Fase 2: Requerimiento 2 - Similitud Textual** (7 días)
+
+```
+
+Concepts of Generative AI in Education:- Días 6-7: Algoritmos clásicos (Levenshtein, TF-IDF, Jaccard, N-gramas)
+
+- Generative models, Prompting, Machine learning, Multimodality
+
+- Fine-tuning, Training data, Algorithmic bias#### **Requerimiento 4: Clustering Jerárquico**- Días 8-9: Algoritmos con IA (BERT, Sentence-BERT)
+
+- Explainability, Transparency, Ethics, Privacy
+
+- Personalization, Human-AI interaction, AI literacy, Co-creation- [ ] Algoritmo de clustering- Días 10-11: Documentación matemática detallada
+
+```
+
+- [ ] Generación de dendrogramas- Día 12: UI para comparación de abstracts
+
+**Estimado:** 2 días (12 horas)
+
+- [ ] Identificación automática de grupos
+
+#### **Requerimiento 4: Clustering Jerárquico** (0%)
+
+- ❌ Preprocesamiento de abstracts- [ ] Métricas de evaluación### **Fase 3: Requerimiento 3 - Frecuencias de Conceptos** (4 días)
+
+- ❌ Implementación de 3 algoritmos de clustering (Ward, Average Linkage, Complete Linkage)
+
+- ❌ Generación de dendrogramas interactivos- [ ] Endpoints REST- Día 13: Análisis de frecuencias de categorías predefinidas
+
+- ❌ Evaluación comparativa (Silhouette Score)
+
+- **Prioridad:** ALTA | **Estimado:** 6 horas- Día 14: Generación automática de palabras asociadas con NLP
+
+**Estimado:** 3 días (18 horas)
+
 - Día 15: Métricas de precisión
-- Día 16: Visualizaciones de frecuencias
 
-### **Fase 4: Requerimiento 4 - Clustering Jerárquico** (5 días)
-- Días 17-18: Preprocesamiento de texto y vectorización
-- Día 19: Implementación de 3 algoritmos de clustering
-- Día 20: Generación de dendrogramas interactivos con D3.js
-- Día 21: Evaluación comparativa (Silhouette Score)
+#### **Requerimiento 5: Visualizaciones Interactivas** (0%)
 
-### **Fase 5: Requerimiento 5 - Visualizaciones** (4 días)
+- ❌ Mapa de calor geográfico (distribución por país del primer autor)#### **Requerimiento 5: Scrapers Adicionales**- Día 16: Visualizaciones de frecuencias
+
+- ❌ Nube de palabras dinámica (términos frecuentes en abstracts y keywords)
+
+- ❌ Línea temporal de publicaciones por año y revista- [ ] ACM Digital Library scraper
+
+- ❌ Exportación a PDF de visualizaciones
+
+- [ ] SAGE Journals scraper### **Fase 4: Requerimiento 4 - Clustering Jerárquico** (5 días)
+
+**Estimado:** 2 días (12 horas)
+
+- [ ] ScienceDirect scraper- Días 17-18: Preprocesamiento de texto y vectorización
+
+#### **Requerimiento 6: Despliegue y Documentación** (0%)
+
+- ❌ Dockerización del proyecto- **Prioridad:** MEDIA | **Estimado:** 12 horas- Día 19: Implementación de 3 algoritmos de clustering
+
+- ❌ Configuración de CI/CD
+
+- ❌ Documentación técnica completa- Día 20: Generación de dendrogramas interactivos con D3.js
+
+- ❌ Despliegue en producción
+
+---- Día 21: Evaluación comparativa (Silhouette Score)
+
+**Estimado:** 2 días (12 horas)
+
+
+
+---
+
+## 🧹 LIMPIEZA REALIZADA (23 de Enero, 2025)### **Fase 5: Requerimiento 5 - Visualizaciones** (4 días)
+
+## 🗓️ PLAN DE ACCIÓN PRIORIZADO
+
 - Día 22: Mapa de calor geográfico (Plotly/Leaflet)
-- Día 23: Nube de palabras dinámica (D3.js)
-- Día 24: Línea temporal por año y revista (Recharts)
-- Día 25: Exportación a PDF (jsPDF + html2canvas)
 
-### **Fase 6: Requerimiento 6 - Despliegue y Documentación** (4 días)
-- Día 26: Documentación técnica de arquitectura
-- Día 27: Documentación de algoritmos implementados
-- Día 28: Dockerización y CI/CD
-- Día 29: Despliegue en producción
+### **Fase 1: Completar Requerimiento 1** (2 días)
 
-### **Fase 7: Testing Final y Optimización** (2 días)
-- Día 30: Testing integral y correcciones
-- Día 31: Optimización de rendimiento
+**Prioridad: CRÍTICA** - Es la base para todos los demás requerimientos### **Archivos Eliminados**- Día 23: Nube de palabras dinámica (D3.js)
 
-**TOTAL ESTIMADO: 31 días (≈ 6-7 semanas)**
+
+
+1. **Día 1: Completar Scrapers**- Día 24: Línea temporal por año y revista (Recharts)
+
+   - ✅ Verificar y completar ACM Scraper
+
+   - ✅ Verificar y completar SAGE Scraper#### **Debug y Temporales**- Día 25: Exportación a PDF (jsPDF + html2canvas)
+
+   - 🆕 Implementar ScienceDirect Scraper
+
+   - ✅ Testing de scrapers individuales- ❌ `Backend/debug_bibtex.py` - Script de debug temporal
+
+
+
+2. **Día 2: Integración y API**- ❌ `Backend/test_debug.py` - Test de debug### **Fase 6: Requerimiento 6 - Despliegue y Documentación** (4 días)
+
+   - 🆕 Crear endpoints API `/api/v1/data`
+
+   - ✅ Integrar UnifiedDownloader con todos los scrapers- ❌ `Backend/test_requerimiento1.log` - Log temporal- Día 26: Documentación técnica de arquitectura
+
+   - ✅ Implementar sistema de jobs en background (Celery/BackgroundTasks)
+
+   - ✅ Testing de integración completa- ❌ `SESION_RESUMEN.md` - Documentación temporal- Día 27: Documentación de algoritmos implementados
+
+   - 📝 Generar dataset unificado de prueba
+
+- ❌ `SESION_PARSERS.md` - Documentación temporal- Día 28: Dockerización y CI/CD
+
+**Entregables:**
+
+- Sistema automático de descarga funcionando- ❌ `PROGRESO.md` - Duplicado (se mantiene PROGRESO_ACTUALIZADO.md)- Día 29: Despliegue en producción
+
+- API REST para descarga (`/download`, `/status/{job_id}`, `/unified`, `/duplicates`)
+
+- Dataset unificado en `data/downloads/unified.json`
+
+- Reporte de duplicados en `data/downloads/duplicates_report.json`
+
+#### **Cache y Builds**### **Fase 7: Testing Final y Optimización** (2 días)
 
 ---
 
-## 🏗️ ARQUITECTURA DEL SISTEMA
+- ❌ `Backend/__pycache__/` (recursivo)- Día 30: Testing integral y correcciones
 
-```
-┌─────────────────────────────────────────────────────────────┐
+### **Fase 2: Requerimiento 3 - Análisis de Frecuencias** (1.5 días)
+
+- ❌ `Backend/.pytest_cache/`- Día 31: Optimización de rendimiento
+
+1. **Paso 1: Análisis de Categoría Predefinida** (0.5 día)
+
+   - Implementar `FrequencyAnalyzer` en `app/services/analytics/`- ❌ Todos los `__pycache__/` en subdirectorios
+
+   - Buscar palabras asociadas en abstracts
+
+   - Calcular frecuencias y generar estadísticas**TOTAL ESTIMADO: 31 días (≈ 6-7 semanas)**
+
+
+
+2. **Paso 2: Generación Automática de Palabras** (0.5 día)#### **Datos Temporales**
+
+   - Usar NLP (NLTK/spaCy) para extracción de términos
+
+   - Lematización y eliminación de stopwords- ❌ `Backend/data/downloads/*.json` - Descargas de prueba---
+
+   - Generar top 15 palabras asociadas automáticamente
+
+- ❌ `Backend/data/downloads/*.bib`
+
+3. **Paso 3: Métricas de Precisión** (0.5 día)
+
+   - Calcular precisión comparando palabras generadas vs predefinidas- ❌ `Backend/data/downloads/*.ris`## 🏗️ ARQUITECTURA DEL SISTEMA
+
+   - Implementar endpoints API
+
+   - Testing y visualización básica- ❌ `Backend/data/downloads/*.csv`
+
+
+
+**Entregables:**```
+
+- `app/services/analytics/frequency_analyzer.py`
+
+- Endpoints: `/api/v1/analytics/frequencies`, `/api/v1/analytics/associated-words`**Total eliminado:** ~35 archivos + directorios de cache┌─────────────────────────────────────────────────────────────┐
+
+- Reporte de precisión
+
 │                      FRONTEND (React + TS)                   │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │   D3.js     │  │  Plotly.js  │  │  Recharts   │         │
-│  │ Dendrogramas│  │ Mapas Calor │  │  Líneas     │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
-└────────────────────────┬────────────────────────────────────┘
-                         │ HTTP/REST API
-┌────────────────────────▼────────────────────────────────────┐
-│                   BACKEND (FastAPI)                          │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │            API ENDPOINTS (v1)                        │   │
-│  ├──────────────────────────────────────────────────────┤   │
-│  │ /api/v1/data          - Data Acquisition Service    │   │
-│  │ /api/v1/ml            - ML & NLP Service             │   │
-│  │ /api/v1/analytics     - Analytics Service            │   │
-│  │ /api/v1/viz           - Visualization Service        │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │         SERVICIOS DE NEGOCIO                        │    │
-│  ├─────────────────────────────────────────────────────┤    │
-│  │ 🔍 DataAcquisitionService                           │    │
-│  │    - Scrapers (ACM, SAGE, ScienceDirect)           │    │
-│  │    - Unificación y deduplicación                    │    │
-│  │                                                      │    │
-│  │ 🤖 MLAnalysisService                                │    │
-│  │    - Similitud clásica (Levenshtein, TF-IDF, etc.) │    │
-│  │    - Similitud IA (BERT, Sentence-BERT)            │    │
-│  │    - Clustering jerárquico (Ward, Average, etc.)   │    │
-│  │                                                      │    │
-│  │ 📊 AnalyticsService                                 │    │
-│  │    - Frecuencias de conceptos                       │    │
-│  │    - Métricas bibliométricas                        │    │
-│  │    - Generación de palabras asociadas               │    │
-│  │                                                      │    │
-│  │ 📈 VisualizationService                             │    │
-│  │    - Mapas de calor geográficos                     │    │
-│  │    - Nubes de palabras                              │    │
-│  │    - Líneas temporales                              │    │
-│  │    - Exportación PDF                                │    │
-│  └─────────────────────────────────────────────────────┘    │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-┌────────────────────────▼────────────────────────────────────┐
-│               CAPA DE DATOS                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │  PostgreSQL  │  │    Redis     │  │  File System │      │
-│  │  Metadatos   │  │    Cache     │  │  Archivos    │      │
-│  │  Publicac.   │  │  Embeddings  │  │  CSV/BibTeX  │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-```
 
 ---
 
-## 📝 REQUERIMIENTO 1: AUTOMATIZACIÓN DE DESCARGA DE DATOS
+### **Nuevo .gitignore Creado**│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
 
-### **Objetivo**
-Automatizar la descarga de publicaciones científicas desde ACM, SAGE y ScienceDirect, unificar los datos en un archivo único sin duplicados, y generar un reporte de productos eliminados.
+### **Fase 3: Requerimiento 4 - Clustering Jerárquico** (2 días)
 
-### **Componentes a Implementar**
+│  │   D3.js     │  │  Plotly.js  │  │  Recharts   │         │
 
-#### 1.1. **Scrapers y Conectores API**
+1. **Paso 1: Preprocesamiento** (0.5 día)
 
-**Archivos a crear:**
+   - Pipeline de limpieza de textoExcluye:│  │ Dendrogramas│  │ Mapas Calor │  │  Líneas     │         │
+
+   - Vectorización (TF-IDF o embeddings)
+
+   - Normalización- `__pycache__/`, `*.pyc`, `*.pyo`│  └─────────────┘  └─────────────┘  └─────────────┘         │
+
+
+
+2. **Paso 2: Algoritmos de Clustering** (1 día)- `venv/`, `.venv/`, `env/`└────────────────────────┬────────────────────────────────────┘
+
+   - Implementar Ward Linkage
+
+   - Implementar Average Linkage- `.pytest_cache/`, `.coverage`                         │ HTTP/REST API
+
+   - Implementar Complete Linkage
+
+   - Métricas de evaluación (Silhouette Score)- `.env`, `.env.local`┌────────────────────────▼────────────────────────────────────┐
+
+
+
+3. **Paso 3: Dendrogramas** (0.5 día)- `Backend/data/downloads/*` (excepto `.gitkeep`)│                   BACKEND (FastAPI)                          │
+
+   - Generar dendrogramas con scipy/matplotlib
+
+   - Implementar endpoints API- `Backend/logs/*.log`│  ┌──────────────────────────────────────────────────────┐   │
+
+   - Testing
+
+- `Backend/models/*.pkl`, `*.h5`, `*.pt`│  │            API ENDPOINTS (v1)                        │   │
+
+**Entregables:**
+
+- `app/services/ml_analysis/clustering/hierarchical_clustering.py`- `SESION_*.md` (archivos de sesión temporal)│  ├──────────────────────────────────────────────────────┤   │
+
+- Endpoints: `/api/v1/clustering/hierarchical`
+
+- Dendrogramas en formato JSON para visualización- `debug_*.py`, `test_debug.py`│  │ /api/v1/data          - Data Acquisition Service    │   │
+
+
+
+---- `node_modules/`, `dist/`, `build/`│  │ /api/v1/ml            - ML & NLP Service             │   │
+
+
+
+### **Fase 4: Requerimiento 5 - Visualizaciones** (2 días)- `.DS_Store`, `Thumbs.db`│  │ /api/v1/analytics     - Analytics Service            │   │
+
+
+
+1. **Backend: Endpoints de Datos** (0.5 día)│  │ /api/v1/viz           - Visualization Service        │   │
+
+   - `/api/v1/viz/geographic-distribution`
+
+   - `/api/v1/viz/word-cloud-data`---│  └──────────────────────────────────────────────────────┘   │
+
+   - `/api/v1/viz/timeline`
+
+│                                                              │
+
+2. **Frontend: Implementación de Visualizaciones** (1 día)
+
+   - Mapa de calor geográfico (Plotly/Leaflet)## 🏗️ ESTRUCTURA FINAL DEL REPOSITORIO│  ┌─────────────────────────────────────────────────────┐    │
+
+   - Nube de palabras dinámica (D3.js/react-wordcloud)
+
+   - Línea temporal (Recharts)│  │         SERVICIOS DE NEGOCIO                        │    │
+
+
+
+3. **Exportación PDF** (0.5 día)```│  ├─────────────────────────────────────────────────────┤    │
+
+   - Implementar jsPDF + html2canvas
+
+   - Endpoint `/api/v1/viz/export-pdf`ProyectoAnalisisAlgoritmos/│  │ 🔍 DataAcquisitionService                           │    │
+
+
+
+**Entregables:**├── .gitignore                      # Control de versiones│  │    - Scrapers (ACM, SAGE, ScienceDirect)           │    │
+
+- Componentes React en `Frontend/bibliometric-app/src/components/visualizations/`
+
+- Sistema de exportación PDF funcional├── README.md                       # Documentación principal│  │    - Unificación y deduplicación                    │    │
+
+
+
+---├── PLAN_IMPLEMENTACION.md         # Este archivo│  │                                                      │    │
+
+
+
+### **Fase 5: Requerimiento 6 - Despliegue** (1.5 días)├── PROGRESO_ACTUALIZADO.md        # Estado detallado del proyecto│  │ 🤖 MLAnalysisService                                │    │
+
+
+
+1. **Dockerización** (0.5 día)││  │    - Similitud clásica (Levenshtein, TF-IDF, etc.) │    │
+
+   - Dockerfile para Backend
+
+   - Dockerfile para Frontend├── Backend/│  │    - Similitud IA (BERT, Sentence-BERT)            │    │
+
+   - docker-compose.yml
+
+│   ├── main.py                    # Aplicación FastAPI principal│  │    - Clustering jerárquico (Ward, Average, etc.)   │    │
+
+2. **Documentación** (0.5 día)
+
+   - README.md completo│   ├── requirements.txt           # Dependencias Python│  │                                                      │    │
+
+   - Documentación técnica de algoritmos
+
+   - Guía de instalación y uso│   ├── pytest.ini                 # Configuración de pytest│  │ 📊 AnalyticsService                                 │    │
+
+
+
+3. **Despliegue** (0.5 día)│   ├── .env.example              # Template de variables de entorno│  │    - Frecuencias de conceptos                       │    │
+
+   - Configurar CI/CD (GitHub Actions)
+
+   - Deploy en servidor (Heroku/Railway/DigitalOcean)│   ││  │    - Métricas bibliométricas                        │    │
+
+   - Testing en producción
+
+│   ├── app/│  │    - Generación de palabras asociadas               │    │
+
+**Entregables:**
+
+- Aplicación desplegada y accesible│   │   ├── __init__.py│  │                                                      │    │
+
+- Documentación completa
+
+- Repositorio limpio y profesional│   │   ├── api/│  │ 📈 VisualizationService                             │    │
+
+
+
+---│   │   │   ├── __init__.py│  │    - Mapas de calor geográficos                     │    │
+
+
+
+## 🏗️ ARQUITECTURA DEL SISTEMA│   │   │   └── v1/│  │    - Nubes de palabras                              │    │
+
+
+
+```│   │   │       ├── __init__.py│  │    - Líneas temporales                              │    │
+
+┌─────────────────────────────────────────────────────────────┐
+
+│                  FRONTEND (React + TypeScript)               ││   │   │       ├── data_acquisition.py│  │    - Exportación PDF                                │    │
+
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+
+│  │   D3.js      │  │  Plotly.js   │  │  Recharts    │      ││   │   │       └── similarity.py│  └─────────────────────────────────────────────────────┘    │
+
+│  │ Dendrogramas │  │ Mapa Calor   │  │  Timeline    │      │
+
+│  └──────────────┘  └──────────────┘  └──────────────┘      ││   │   │└────────────────────────┬────────────────────────────────────┘
+
+└───────────────────────────┬─────────────────────────────────┘
+
+                            │ HTTP/REST API│   │   ├── config/                         │
+
+┌───────────────────────────▼─────────────────────────────────┐
+
+│                   BACKEND (FastAPI)                          ││   │   │   ├── __init__.py┌────────────────────────▼────────────────────────────────────┐
+
+│  ┌────────────────────────────────────────────────────────┐ │
+
+│  │         API ENDPOINTS (/api/v1)                        │ ││   │   │   └── settings.py│               CAPA DE DATOS                                  │
+
+│  ├────────────────────────────────────────────────────────┤ │
+
+│  │ /data/*          - Descarga y unificación (Req 1)     │ ││   │   ││  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+
+│  │ /similarity/*    - Similitud textual (Req 2) ✅       │ │
+
+│  │ /analytics/*     - Frecuencias (Req 3)                │ ││   │   ├── models/│  │  PostgreSQL  │  │    Redis     │  │  File System │      │
+
+│  │ /clustering/*    - Clustering jerárquico (Req 4)      │ │
+
+│  │ /viz/*           - Visualizaciones (Req 5)            │ ││   │   │   ├── __init__.py│  │  Metadatos   │  │    Cache     │  │  Archivos    │      │
+
+│  └────────────────────────────────────────────────────────┘ │
+
+│                                                              ││   │   │   └── publication.py│  │  Publicac.   │  │  Embeddings  │  │  CSV/BibTeX  │      │
+
+│  ┌────────────────────────────────────────────────────────┐ │
+
+│  │              SERVICIOS DE NEGOCIO                      │ ││   │   ││  └──────────────┘  └──────────────┘  └──────────────┘      │
+
+│  ├────────────────────────────────────────────────────────┤ │
+
+│  │ 📥 DataAcquisitionService (Req 1) - 40% ⏳            │ ││   │   ├── services/└─────────────────────────────────────────────────────────────┘
+
+│  │    - Scrapers: ACM, SAGE, ScienceDirect              │ │
+
+│  │    - Parsers: BibTeX, RIS, CSV ✅                     │ ││   │   │   ├── __init__.py```
+
+│  │    - Deduplicador inteligente                         │ │
+
+│  │                                                        │ ││   │   │   ├── analytics/               # Placeholder (Req. 3)
+
+│  │ 🤖 MLAnalysisService                                  │ │
+
+│  │    - Similitud (Req 2) ✅                             │ ││   │   │   │   └── __init__.py---
+
+│  │    - Clustering (Req 4) - 0% ❌                       │ │
+
+│  │                                                        │ ││   │   │   ├── data_acquisition/
+
+│  │ 📊 AnalyticsService (Req 3) - 0% ❌                   │ │
+
+│  │    - Frecuencias de conceptos                         │ ││   │   │   │   ├── __init__.py## 📝 REQUERIMIENTO 1: AUTOMATIZACIÓN DE DESCARGA DE DATOS
+
+│  │    - Generación de palabras asociadas                 │ │
+
+│  │    - Métricas de precisión                            │ ││   │   │   │   ├── base_scraper.py
+
+│  │                                                        │ │
+
+│  │ 📈 VisualizationService (Req 5) - 0% ❌               │ ││   │   │   │   ├── crossref_scraper.py### **Objetivo**
+
+│  │    - Mapas de calor geográficos                       │ │
+
+│  │    - Nubes de palabras dinámicas                      │ ││   │   │   │   ├── deduplicator.pyAutomatizar la descarga de publicaciones científicas desde ACM, SAGE y ScienceDirect, unificar los datos en un archivo único sin duplicados, y generar un reporte de productos eliminados.
+
+│  │    - Líneas temporales                                │ │
+
+│  │    - Exportación PDF                                  │ ││   │   │   │   ├── unified_downloader.py
+
+│  └────────────────────────────────────────────────────────┘ │
+
+└───────────────────────────┬─────────────────────────────────┘│   │   │   │   └── parsers/### **Componentes a Implementar**
+
+                            │
+
+┌───────────────────────────▼─────────────────────────────────┐│   │   │   │       ├── __init__.py
+
+│                   CAPA DE DATOS                              │
+
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      ││   │   │   │       ├── bibtex_parser.py   # ✅ 450 líneas#### 1.1. **Scrapers y Conectores API**
+
+│  │  PostgreSQL  │  │    Redis     │  │  File System │      │
+
+│  │  (Futuro)    │  │    Cache     │  │  JSON/CSV    │      ││   │   │   │       ├── ris_parser.py      # ✅ 420 líneas
+
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+
+└─────────────────────────────────────────────────────────────┘│   │   │   │       ├── csv_parser.py      # ✅ 290 líneas**Archivos a crear:**
+
 ```
-Backend/app/services/data_acquisition/
-├── __init__.py
-├── base_scraper.py          # Clase base abstracta
-├── acm_scraper.py           # Scraper para ACM Digital Library
-├── sage_scraper.py          # Scraper para SAGE Publications
-├── sciencedirect_scraper.py # Scraper para ScienceDirect
-├── unified_downloader.py    # Orquestador de descargas
-└── parsers/
-    ├── __init__.py
-    ├── bibtex_parser.py     # Parser para formato BibTex
-    ├── ris_parser.py        # Parser para formato RIS
-    └── csv_parser.py        # Parser para formato CSV
+
+│   │   │   │       └── unifier.py         # ✅ 220 líneas```
+
+---
+
+│   │   │   ├── ml_analysis/Backend/app/services/data_acquisition/
+
+## 📦 ESTRUCTURA DE ARCHIVOS
+
+│   │   │   │   ├── __init__.py├── __init__.py
+
 ```
 
-**Funcionalidades clave:**
+ProyectoAnalisisAlgoritmos/│   │   │   │   └── similarity/├── base_scraper.py          # Clase base abstracta
 
-```python
-# base_scraper.py - Clase base abstracta
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+├── .gitignore                          ✅
 
-class BaseScraper(ABC):
-    """Clase base para todos los scrapers de bases de datos científicas."""
-    
-    @abstractmethod
-    async def search(self, query: str, max_results: int) -> List[Dict[str, Any]]:
-        """Busca publicaciones con la query especificada."""
-        pass
-    
-    @abstractmethod
-    async def download_metadata(self, publication_id: str) -> Dict[str, Any]:
-        """Descarga metadatos completos de una publicación."""
-        pass
-    
-    @abstractmethod
-    def export_to_format(self, publications: List[Dict], format: str) -> str:
-        """Exporta publicaciones al formato especificado (bibtex, ris, csv)."""
-        pass
-```
+├── README.md                           ✅│   │   │   │       ├── __init__.py├── acm_scraper.py           # Scraper para ACM Digital Library
 
-**Tecnologías:**
-- `scrapy` para scraping web
-- `aiohttp` para peticiones asíncronas
-- `crossref-commons` para API de CrossRef
-- `scholarly` para búsquedas académicas
-- `habanero` para API de CrossRef
-- `beautifulsoup4` para parsing HTML
+├── PLAN_IMPLEMENTACION.md             ✅ (este archivo)
 
-#### 1.2. **Sistema de Unificación y Deduplicación**
+││   │   │   │       ├── base_similarity.py       # ✅├── sage_scraper.py          # Scraper para SAGE Publications
 
-**Archivos a crear:**
-```
-Backend/app/services/data_acquisition/
-├── deduplicator.py          # Sistema de eliminación de duplicados
+├── Backend/
+
+│   ├── main.py                        ✅ FastAPI app (247 líneas)│   │   │   │       ├── levenshtein.py          # ✅├── sciencedirect_scraper.py # Scraper para ScienceDirect
+
+│   ├── requirements.txt               ✅ 79 dependencias
+
+│   ├── pytest.ini                     ✅│   │   │   │       ├── tfidf_cosine.py         # ✅├── unified_downloader.py    # Orquestador de descargas
+
+│   │
+
+│   ├── app/│   │   │   │       ├── jaccard.py              # ✅└── parsers/
+
+│   │   ├── __init__.py               ✅
+
+│   │   ││   │   │   │       ├── ngrams.py               # ✅    ├── __init__.py
+
+│   │   ├── api/v1/
+
+│   │   │   ├── __init__.py           ✅│   │   │   │       ├── bert_embeddings.py      # ✅    ├── bibtex_parser.py     # Parser para formato BibTex
+
+│   │   │   ├── similarity.py         ✅ (742 líneas) - Req 2
+
+│   │   │   ├── data_acquisition.py   ⏳ (pendiente completar) - Req 1│   │   │   │       └── sentence_bert.py        # ✅    ├── ris_parser.py        # Parser para formato RIS
+
+│   │   │   ├── analytics.py          ❌ (crear) - Req 3
+
+│   │   │   ├── clustering.py         ❌ (crear) - Req 4│   │   │   └── visualization/           # Placeholder    └── csv_parser.py        # Parser para formato CSV
+
+│   │   │   └── visualization.py      ❌ (crear) - Req 5
+
+│   │   ││   │   │       └── __init__.py```
+
+│   │   ├── models/
+
+│   │   │   ├── __init__.py           ✅│   │   └── utils/
+
+│   │   │   └── publication.py        ✅
+
+│   │   ││   │       └── __init__.py**Funcionalidades clave:**
+
+│   │   ├── services/
+
+│   │   │   ├── data_acquisition/│   │
+
+│   │   │   │   ├── base_scraper.py           ✅ (368 líneas)
+
+│   │   │   │   ├── crossref_scraper.py       ⏳ (verificar)│   ├── data/```python
+
+│   │   │   │   ├── acm_scraper.py            ⏳ (completar)
+
+│   │   │   │   ├── sage_scraper.py           ⏳ (completar)│   │   └── downloads/# base_scraper.py - Clase base abstracta
+
+│   │   │   │   ├── sciencedirect_scraper.py  ❌ (crear)
+
+│   │   │   │   ├── deduplicator.py           ⏳ (verificar)│   │       └── .gitkeepfrom abc import ABC, abstractmethod
+
+│   │   │   │   ├── unified_downloader.py     ✅ (431 líneas)
+
+│   │   │   │   └── parsers/│   │from typing import List, Dict, Any
+
+│   │   │   │       ├── bibtex_parser.py      ✅ (450 líneas)
+
+│   │   │   │       ├── ris_parser.py         ✅ (420 líneas)│   ├── logs/
+
+│   │   │   │       ├── csv_parser.py         ✅ (290 líneas)
+
+│   │   │   │       └── unifier.py            ✅ (220 líneas)│   │   └── .gitkeepclass BaseScraper(ABC):
+
+│   │   │   │
+
+│   │   │   ├── ml_analysis/│   │    """Clase base para todos los scrapers de bases de datos científicas."""
+
+│   │   │   │   ├── similarity/                    ✅ Req 2
+
+│   │   │   │   │   ├── levenshtein.py            ✅│   ├── models/    
+
+│   │   │   │   │   ├── tfidf_cosine.py           ✅
+
+│   │   │   │   │   ├── jaccard.py                ✅│   │   └── .gitkeep    @abstractmethod
+
+│   │   │   │   │   ├── ngrams.py                 ✅
+
+│   │   │   │   │   ├── bert_embeddings.py        ✅│   │    async def search(self, query: str, max_results: int) -> List[Dict[str, Any]]:
+
+│   │   │   │   │   └── sentence_bert.py          ✅
+
+│   │   │   │   ││   └── tests/        """Busca publicaciones con la query especificada."""
+
+│   │   │   │   └── clustering/                    ❌ Req 4
+
+│   │   │   │       ├── __init__.py               ❌ (crear)│       ├── __init__.py        pass
+
+│   │   │   │       ├── hierarchical.py           ❌ (crear)
+
+│   │   │   │       └── dendrogram_generator.py   ❌ (crear)│       ├── test_similarity_endpoints.py   # ✅ 23 tests    
+
+│   │   │   │
+
+│   │   │   ├── analytics/                         ❌ Req 3│       ├── test_similarity_api.py         # ✅ 3 tests    @abstractmethod
+
+│   │   │   │   ├── __init__.py                   ✅ (placeholder)
+
+│   │   │   │   ├── frequency_analyzer.py         ❌ (crear)│       ├── test_parsers.py                # ✅ 7 tests    async def download_metadata(self, publication_id: str) -> Dict[str, Any]:
+
+│   │   │   │   └── word_extractor.py             ❌ (crear)
+
+│   │   │   ││       ├── test_similitud.py              # ✅ 4 tests        """Descarga metadatos completos de una publicación."""
+
+│   │   │   └── visualization/                     ❌ Req 5
+
+│   │   │       ├── __init__.py                   ✅ (placeholder)│       └── test_requerimiento1.py         # ✅ 2 tests        pass
+
+│   │   │       ├── geographic_map.py             ❌ (crear)
+
+│   │   │       └── pdf_exporter.py               ❌ (crear)│    
+
+│   │   │
+
+│   │   └── utils/└── Frontend/    @abstractmethod
+
+│   │       └── __init__.py                       ✅
+
+│   │    └── bibliometric-app/    def export_to_format(self, publications: List[Dict], format: str) -> str:
+
+│   ├── data/downloads/                           ✅ (.gitkeep)
+
+│   ├── logs/                                     ✅ (.gitkeep)        ├── package.json        """Exporta publicaciones al formato especificado (bibtex, ris, csv)."""
+
+│   ├── models/                                   ✅ (.gitkeep)
+
+│   │        ├── vite.config.ts        pass
+
+│   └── tests/
+
+│       ├── test_parsers.py                      ✅ (7 tests pasando)        ├── tsconfig.json```
+
+│       ├── test_similitud.py                    ✅ (4 tests pasando)
+
+│       ├── test_similarity_api.py               ✅ (3 tests pasando)        ├── .gitignore
+
+│       ├── test_similarity_endpoints.py         ✅ (23 tests pasando)
+
+│       └── test_requerimiento1.py               ✅ (2 tests pasando)        ├── public/**Tecnologías:**
+
+│
+
+└── Frontend/bibliometric-app/        └── src/- `scrapy` para scraping web
+
+    ├── package.json                             ✅
+
+    ├── vite.config.ts                           ✅            ├── main.tsx- `aiohttp` para peticiones asíncronas
+
+    └── src/
+
+        ├── main.tsx                             ✅            ├── App.tsx- `crossref-commons` para API de CrossRef
+
+        ├── App.tsx                              ✅
+
+        ├── components/                          ⏳ (pendiente)            ├── types/- `scholarly` para búsquedas académicas
+
+        └── services/api.ts                      ✅
+
+```            ├── services/- `habanero` para API de CrossRef
+
+
+
+---            └── hooks/- `beautifulsoup4` para parsing HTML
+
+
+
+## ✅ CHECKLIST DE FINALIZACIÓN```
+
+
+
+### Requerimiento 1: Automatización de Descarga#### 1.2. **Sistema de Unificación y Deduplicación**
+
+- [x] Parsers BibTeX, RIS, CSV ✅
+
+- [x] BaseScraper y estructura ✅**Estadísticas:**
+
+- [ ] ACM Scraper funcional
+
+- [ ] SAGE Scraper funcional- **Archivos Python activos:** 35**Archivos a crear:**
+
+- [ ] ScienceDirect Scraper funcional
+
+- [ ] Deduplicador probado- **Líneas de código:** ~4,500```
+
+- [ ] UnifiedDownloader integrado
+
+- [ ] Endpoints API `/api/v1/data/*`- **Tests:** 39 totales (11 pasando)Backend/app/services/data_acquisition/
+
+- [ ] Testing completo
+
+- [ ] Dataset unificado generado- **Cobertura:** ~70%├── deduplicator.py          # Sistema de eliminación de duplicados
+
+- [ ] Reporte de duplicados generado
+
 ├── unifier.py               # Unificación de formatos
-└── models/
-    ├── publication.py       # Modelo de datos unificado
-    └── duplicate_report.py  # Modelo de reporte de duplicados
+
+### Requerimiento 2: Similitud Textual
+
+- [x] 6 algoritmos implementados ✅---└── models/
+
+- [x] Documentación matemática ✅
+
+- [x] Endpoints API ✅    ├── publication.py       # Modelo de datos unificado
+
+- [x] Testing completo ✅
+
+- [x] UI para comparación ✅## 📦 DEPENDENCIAS    └── duplicate_report.py  # Modelo de reporte de duplicados
+
+
+
+### Requerimiento 3: Frecuencias```
+
+- [ ] FrequencyAnalyzer
+
+- [ ] Análisis de categoría predefinida### **Backend (Python 3.13)**
+
+- [ ] Generación de palabras con NLP
+
+- [ ] Métricas de precisión**Algoritmo de deduplicación:**
+
+- [ ] Endpoints API
+
+- [ ] Visualizaciones```txt
+
+
+
+### Requerimiento 4: Clustering# Web Framework```python
+
+- [ ] 3 algoritmos de clustering
+
+- [ ] Preprocesamiento de textofastapi==0.119.1# deduplicator.py
+
+- [ ] Generación de dendrogramas
+
+- [ ] Evaluación (Silhouette Score)uvicorn==0.34.0import hashlib
+
+- [ ] Endpoints API
+
+- [ ] Testingpydantic==2.10.3from typing import List, Tuple, Dict
+
+
+
+### Requerimiento 5: Visualizacionesfrom difflib import SequenceMatcher
+
+- [ ] Mapa de calor geográfico
+
+- [ ] Nube de palabras dinámica# ML/NLP
+
+- [ ] Línea temporal
+
+- [ ] Exportación PDFscikit-learn==1.6.1class Deduplicator:
+
+- [ ] Endpoints API
+
+- [ ] Integración frontendsentence-transformers==3.4.0    """Sistema inteligente de eliminación de duplicados."""
+
+
+
+### Requerimiento 6: Desplieguepython-Levenshtein==0.27.0    
+
+- [ ] Dockerfile Backend
+
+- [ ] Dockerfile Frontend    def __init__(self, similarity_threshold: float = 0.95):
+
+- [ ] docker-compose.yml
+
+- [ ] CI/CD configurado# Testing        self.similarity_threshold = similarity_threshold
+
+- [ ] Documentación completa
+
+- [ ] Aplicación desplegadapytest==8.4.2        self.duplicates_report = []
+
+
+
+---pytest-asyncio==0.25.2    
+
+
+
+## 📈 PROGRESO GENERALhttpx==0.28.1    def calculate_title_similarity(self, title1: str, title2: str) -> float:
+
+
+
+``````        """Calcula similitud entre títulos usando SequenceMatcher."""
+
+Requerimiento 1: [████████░░░░░░░░░░] 40%
+
+Requerimiento 2: [████████████████████] 100% ✅        return SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
+
+Requerimiento 3: [░░░░░░░░░░░░░░░░░░░░]   0%
+
+Requerimiento 4: [░░░░░░░░░░░░░░░░░░░░]   0%### **Frontend (Node.js)**    
+
+Requerimiento 5: [░░░░░░░░░░░░░░░░░░░░]   0%
+
+Requerimiento 6: [░░░░░░░░░░░░░░░░░░░░]   0%    def generate_hash(self, publication: Dict) -> str:
+
+
+
+TOTAL PROYECTO: [████████░░░░░░░░░░░░] 40%```json        """Genera hash único basado en título y DOI."""
+
 ```
 
-**Algoritmo de deduplicación:**
+{        identifier = f"{publication.get('title', '')}_{publication.get('doi', '')}"
 
-```python
-# deduplicator.py
-import hashlib
-from typing import List, Tuple, Dict
-from difflib import SequenceMatcher
+**Estimado para completar:** 9 días (54 horas de trabajo)
 
-class Deduplicator:
-    """Sistema inteligente de eliminación de duplicados."""
-    
-    def __init__(self, similarity_threshold: float = 0.95):
-        self.similarity_threshold = similarity_threshold
-        self.duplicates_report = []
-    
-    def calculate_title_similarity(self, title1: str, title2: str) -> float:
-        """Calcula similitud entre títulos usando SequenceMatcher."""
-        return SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
-    
-    def generate_hash(self, publication: Dict) -> str:
-        """Genera hash único basado en título y DOI."""
-        identifier = f"{publication.get('title', '')}_{publication.get('doi', '')}"
-        return hashlib.md5(identifier.encode()).hexdigest()
-    
-    def deduplicate(
-        self, 
-        publications: List[Dict]
-    ) -> Tuple[List[Dict], List[Dict]]:
-        """
+  "dependencies": {        return hashlib.md5(identifier.encode()).hexdigest()
+
+---
+
+    "react": "^18.3.1",    
+
+## 🚀 PRÓXIMOS PASOS INMEDIATOS
+
+    "@mui/material": "^6.3.0",    def deduplicate(
+
+1. **Verificar estado de scrapers existentes**
+
+   - Revisar `acm_scraper.py`, `sage_scraper.py`, `crossref_scraper.py`    "recharts": "^2.15.0"        self, 
+
+   - Identificar qué falta completar
+
+  }        publications: List[Dict]
+
+2. **Completar Requerimiento 1**
+
+   - Implementar scrapers faltantes}    ) -> Tuple[List[Dict], List[Dict]]:
+
+   - Crear endpoints API
+
+   - Testing completo```        """
+
+   - Generar dataset de prueba
+
         Elimina duplicados y retorna:
-        - Lista de publicaciones únicas
-        - Lista de duplicados eliminados
-        """
-        unique_publications = []
-        duplicates = []
-        seen_hashes = set()
-        
-        for pub in publications:
-            pub_hash = self.generate_hash(pub)
-            
-            # Verificar duplicados exactos por hash
-            if pub_hash in seen_hashes:
-                duplicates.append(pub)
-                continue
-            
-            # Verificar duplicados por similitud de título
-            is_duplicate = False
-            for unique_pub in unique_publications:
-                similarity = self.calculate_title_similarity(
-                    pub.get('title', ''),
-                    unique_pub.get('title', '')
-                )
-                if similarity >= self.similarity_threshold:
-                    duplicates.append(pub)
-                    is_duplicate = True
-                    break
-            
-            if not is_duplicate:
-                unique_publications.append(pub)
-                seen_hashes.add(pub_hash)
-        
-        return unique_publications, duplicates
-```
 
-#### 1.3. **Endpoints API**
+3. **Continuar con Requerimiento 3**
+
+   - Implementar análisis de frecuencias---        - Lista de publicaciones únicas
+
+   - NLP para generación de palabras
+
+        - Lista de duplicados eliminados
+
+---
+
+## 🎯 PRÓXIMOS PASOS        """
+
+**Última actualización:** 23 de Enero, 2025  
+
+**Versión:** 3.0          unique_publications = []
+
+**Estado:** 🟢 En desarrollo activo (40% completado)
+
+### **Inmediato**        duplicates = []
+
+1. **Requerimiento 3:** Análisis de Frecuencias (6h)        seen_hashes = set()
+
+2. **Requerimiento 4:** Clustering Jerárquico (6h)        
+
+3. **Frontend:** Integración básica (8h)        for pub in publications:
+
+            pub_hash = self.generate_hash(pub)
+
+### **Corto Plazo**            
+
+4. **Requerimiento 5:** Scrapers adicionales (12h)            # Verificar duplicados exactos por hash
+
+5. **Visualizaciones:** Implementación completa (10h)            if pub_hash in seen_hashes:
+
+                duplicates.append(pub)
+
+### **Largo Plazo**                continue
+
+6. **Despliegue:** Producción (4h)            
+
+7. **Documentación:** Completa (8h)            # Verificar duplicados por similitud de título
+
+            is_duplicate = False
+
+---            for unique_pub in unique_publications:
+
+                similarity = self.calculate_title_similarity(
+
+## ✅ CHECKLIST DE CALIDAD                    pub.get('title', ''),
+
+                    unique_pub.get('title', '')
+
+- [x] Código limpio y documentado                )
+
+- [x] Tests pasando                if similarity >= self.similarity_threshold:
+
+- [x] .gitignore configurado                    duplicates.append(pub)
+
+- [x] Estructura modular                    is_duplicate = True
+
+- [x] Logging implementado                    break
+
+- [ ] Cobertura >80%            
+
+- [ ] Frontend funcional            if not is_duplicate:
+
+- [ ] CI/CD configurado                unique_publications.append(pub)
+
+                seen_hashes.add(pub_hash)
+
+---        
+
+        return unique_publications, duplicates
+
+**Última actualización:** 23 de Enero, 2025  ```
+
+**Versión:** 2.0  
+
+**Estado:** 🟢 En desarrollo activo#### 1.3. **Endpoints API**
+
 
 **Archivos a crear:**
 ```

@@ -229,10 +229,10 @@ class LevenshteinSimilarity(BaseSimilarity):
                 "distance": int(distance),
                 "similarity": float(similarity),
                 "similarity_percentage": f"{similarity * 100:.2f}%",
-                "max_length": max_len
+                "max_length": int(max_len)
             },
             "operations": {
-                "total_edits": distance,
+                "total_edits": int(distance),
                 "sequence": operations[:20],  # Primeras 20 operaciones
                 "counts": operation_counts,
                 "efficiency": f"{operation_counts['match']}/{len(operations)} caracteres coinciden"
@@ -243,8 +243,8 @@ class LevenshteinSimilarity(BaseSimilarity):
                 "final_value": int(dp_matrix[-1, -1])
             },
             "complexity": {
-                "time": f"O(m×n) = O({len(text1_processed)}×{len(text2_processed)}) = O({len(text1_processed) * len(text2_processed)})",
-                "space": f"O(m×n) = O({len(text1_processed) * len(text2_processed)}) para matriz completa"
+                "time": f"O(m×n) = O({len(text1_processed)}×{len(text2_processed)}) = O({int(len(text1_processed) * len(text2_processed))})",
+                "space": f"O(m×n) = O({int(len(text1_processed) * len(text2_processed))}) para matriz completa"
             },
             "explanation": explanation
         }

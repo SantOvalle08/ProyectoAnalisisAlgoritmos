@@ -1,0 +1,374 @@
+# ===== PYTHON =====
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ===== VIRTUAL ENVIRONMENTS =====
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*/
+.conda/
+conda-meta/
+
+# Poetry
+poetry.lock
+.poetry/
+
+# pipenv
+Pipfile.lock
+
+# pyenv
+.python-version
+
+# ===== TESTING =====
+# pytest
+.pytest_cache/
+*/.pytest_cache/
+.cache
+.cache/
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+*.py,cover
+.hypothesis/
+
+# Test output
+.tox/
+.nox/
+.pytest_cache/
+pytestdebug.log
+
+# Unit test / coverage reports
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# ===== IDEs & EDITORS =====
+# VSCode
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
+# PyCharm / IntelliJ
+.idea/
+.idea/*
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== ENVIRONMENT VARIABLES & SECRETS =====
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+.envrc
+
+# Secrets
+secrets.json
+credentials.json
+*.key
+*.pem
+*.crt
+*.cer
+*.p12
+.secrets/
+
+# ===== DATABASES & CACHE =====
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Redis dumps
+dump.rdb
+*.rdb
+
+# Cache directories
+.cache/
+*.cache
+cache/
+__pycache__/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytype/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# ===== DATA FILES (temporal downloads) =====
+# Download cache
+Backend/data/downloads/*.json
+Backend/data/downloads/*.bib
+Backend/data/downloads/*.ris
+Backend/data/downloads/*.csv
+Backend/data/downloads/*.xml
+Backend/data/downloads/*.pdf
+Backend/data/downloads/**/*.json
+Backend/data/downloads/**/*.bib
+Backend/data/downloads/**/*.ris
+Backend/data/downloads/**/*.csv
+!Backend/data/downloads/.gitkeep
+
+# Temporary data files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+~*
+.~*
+
+# ===== LOGS =====
+# Application logs
+*.log
+logs/
+*.log.*
+log/
+*.log.gz
+*.log.zip
+
+# Backend specific logs
+Backend/logs/*.log
+Backend/logs/**/*.log
+!Backend/logs/.gitkeep
+
+# Python logging
+*.log.[0-9]*
+python-debug.log
+
+# FastAPI / Uvicorn logs
+uvicorn.log
+gunicorn.log
+celery.log
+
+# ===== ML MODELS & WEIGHTS =====
+# Trained models (can be large files)
+Backend/models/*.pkl
+Backend/models/*.h5
+Backend/models/*.hdf5
+Backend/models/*.pt
+Backend/models/*.pth
+Backend/models/*.ckpt
+Backend/models/*.pb
+Backend/models/*.onnx
+Backend/models/*.tflite
+Backend/models/*.joblib
+Backend/models/**/*.pkl
+Backend/models/**/*.h5
+Backend/models/**/*.pt
+!Backend/models/.gitkeep
+
+# Model checkpoints
+checkpoints/
+*.ckpt
+model_checkpoints/
+
+# TensorBoard logs
+runs/
+tensorboard/
+tf_logs/
+
+# Weights & Biases
+wandb/
+.wandb/
+
+# MLflow
+mlruns/
+.mlflow/
+
+# ===== PROJECT SPECIFIC =====
+# Session files (temporal documentation)
+SESION_*.md
+SESSION_*.md
+RESUMEN_SESION_*.md
+
+# Backup files
+*.bak
+*_backup.*
+backup_*/
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# ===== FRONTEND (Node.js / React / Vite) =====
+# Dependencies
+Frontend/bibliometric-app/node_modules/
+node_modules/
+
+# Build outputs
+Frontend/bibliometric-app/dist/
+Frontend/bibliometric-app/build/
+Frontend/bibliometric-app/.next/
+Frontend/bibliometric-app/out/
+Frontend/bibliometric-app/.output/
+Frontend/bibliometric-app/.nuxt/
+
+# Cache directories
+Frontend/bibliometric-app/.cache/
+Frontend/bibliometric-app/.parcel-cache/
+Frontend/bibliometric-app/.vite/
+Frontend/bibliometric-app/.turbo/
+Frontend/bibliometric-app/.eslintcache
+Frontend/bibliometric-app/.stylelintcache
+
+# Coverage
+Frontend/bibliometric-app/coverage/
+Frontend/bibliometric-app/.nyc_output/
+
+# Logs
+Frontend/bibliometric-app/npm-debug.log*
+Frontend/bibliometric-app/yarn-debug.log*
+Frontend/bibliometric-app/yarn-error.log*
+Frontend/bibliometric-app/pnpm-debug.log*
+Frontend/bibliometric-app/lerna-debug.log*
+
+# Local env files
+Frontend/bibliometric-app/.env*.local
+Frontend/bibliometric-app/.env.development.local
+Frontend/bibliometric-app/.env.test.local
+Frontend/bibliometric-app/.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Storybook
+storybook-static/
+
+# ===== TEMPORARY & DEBUG FILES =====
+# Generic temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+~*
+.~*
+
+# Debug files
+debug_*.py
+test_debug.py
+debug.log
+debug_output/
+.debug/
+
+# Profiling
+*.prof
+*.lprof
+*.pstats
+profile_*.txt
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+site/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py

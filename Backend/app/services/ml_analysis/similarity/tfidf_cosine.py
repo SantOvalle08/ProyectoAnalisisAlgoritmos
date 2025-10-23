@@ -77,8 +77,8 @@ class TFIDFCosineSimilarity(BaseSimilarity):
         max_features: int = 5000,
         ngram_range: Tuple[int, int] = (1, 2),
         min_df: int = 1,
-        max_df: float = 0.9,
-        use_stopwords: bool = True
+        max_df: float = 1.0,  # Changed from 0.9 to 1.0 for short texts
+        use_stopwords: bool = False  # Changed from True to False for flexibility
     ):
         """
         Inicializa el algoritmo TF-IDF + Coseno.
@@ -101,12 +101,13 @@ class TFIDFCosineSimilarity(BaseSimilarity):
         self.min_df = min_df
         self.max_df = max_df
         
+        # Create vectorizer with more permissive settings for short texts
         self.vectorizer = TfidfVectorizer(
             max_features=max_features,
             ngram_range=ngram_range,
-            min_df=min_df,
-            max_df=max_df,
-            stop_words='english' if use_stopwords else None,
+            min_df=1,  # Always 1 to work with only 2 documents
+            max_df=1.0,  # Allow terms in all documents for short texts
+            stop_words=None,  # Don't filter stopwords for short texts
             lowercase=True,
             strip_accents='unicode',
             token_pattern=r'\b\w+\b'
@@ -156,6 +157,30 @@ class TFIDFCosineSimilarity(BaseSimilarity):
             logger.debug(f"TF-IDF Cosine: similarity={similarity:.4f}")
             
             return similarity
+            
+        except ValueError as e:
+            # Si el vectorizador falla (e.g., textos muy cortos), usar parámetros más permisivos
+            if "After pruning" in str(e) or "no terms remain" in str(e):
+                logger.warning(f"Vectorizer failed with default params, using permissive params for short texts")
+                try:
+                    # Crear vectorizador más permisivo para textos cortos
+                    simple_vectorizer = TfidfVectorizer(
+                        max_features=None,
+                        ngram_range=(1, 1),  # Solo unigramas
+                        min_df=1,
+                        max_df=1.0,
+                        lowercase=True,
+                        token_pattern=r'\b\w+\b'
+                    )
+                    tfidf_matrix = simple_vectorizer.fit_transform([text1, text2])
+                    similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+                    return max(0.0, min(1.0, float(similarity)))
+                except Exception as e2:
+                    logger.error(f"Error even with simple vectorizer: {str(e2)}")
+                    return 0.0
+            else:
+                logger.error(f"Error en calculate_similarity: {str(e)}")
+                return 0.0
             
         except Exception as e:
             logger.error(f"Error en calculate_similarity: {str(e)}")

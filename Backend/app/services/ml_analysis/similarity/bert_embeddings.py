@@ -61,8 +61,18 @@ COMPLEJIDAD:
 Authors: Santiago Ovalle Cortés, Juan Sebastián Noreña
 """
 
-import torch
-from transformers import BertTokenizer, BertModel
+try:
+    import torch
+    from transformers import BertTokenizer, BertModel
+    _TORCH_AVAILABLE = True
+except Exception:
+    # torch/transformers may not be installed in lightweight test environments.
+    # Defer raising until the class is instantiated so other tests can import the module.
+    torch = None
+    BertTokenizer = None
+    BertModel = None
+    _TORCH_AVAILABLE = False
+
 import numpy as np
 from typing import Dict, Any, List, Tuple, Optional
 import logging
@@ -125,25 +135,33 @@ class BERTEmbeddingsSimilarity(BaseSimilarity):
         self.model_name = model_name
         self.pooling_strategy = pooling_strategy
         self.max_length = min(max_length, 512)  # BERT máximo es 512
-        
+        self.max_length = min(max_length, 512)  # BERT máximo es 512
+
+        # Verificar que las dependencias estén disponibles
+        if not _TORCH_AVAILABLE:
+            raise RuntimeError(
+                "BERTEmbeddingsSimilarity requiere 'torch' y 'transformers'. "
+                "Instale estas dependencias o use los algoritmos clásicos para las pruebas."
+            )
+
         # Configurar dispositivo (GPU o CPU)
         self.device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
-        
+
         logger.info(f"Inicializando BERT: modelo={model_name}, dispositivo={self.device}")
-        
+
         try:
             # Cargar tokenizador y modelo
             self.tokenizer = BertTokenizer.from_pretrained(model_name)
             self.model = BertModel.from_pretrained(model_name)
-            
+
             # Mover modelo al dispositivo
             self.model.to(self.device)
-            
+
             # Poner modelo en modo evaluación (desactiva dropout)
             self.model.eval()
-            
+
             logger.info(f"BERT cargado exitosamente en {self.device}")
-            
+
         except Exception as e:
             logger.error(f"Error cargando BERT: {str(e)}")
             raise

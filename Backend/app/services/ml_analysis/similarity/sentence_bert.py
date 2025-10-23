@@ -77,7 +77,13 @@ COMPLEJIDAD:
 Authors: Santiago Ovalle Cortés, Juan Sebastián Noreña
 """
 
-from sentence_transformers import SentenceTransformer
+try:
+    from sentence_transformers import SentenceTransformer
+    _SENTENCE_TRANSFORMERS_AVAILABLE = True
+except Exception:
+    SentenceTransformer = None
+    _SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 import numpy as np
 from typing import Dict, Any, List, Optional
 import logging
@@ -136,22 +142,28 @@ class SentenceBERTSimilarity(BaseSimilarity):
         self.normalize_embeddings = normalize_embeddings
         
         logger.info(f"Inicializando Sentence-BERT: modelo={model_name}")
-        
+        # Verificar dependencia
+        if not _SENTENCE_TRANSFORMERS_AVAILABLE:
+            raise RuntimeError(
+                "SentenceBERTSimilarity requiere 'sentence-transformers'. "
+                "Instale la dependencia o use algoritmos clásicos para las pruebas."
+            )
+
         try:
             # Cargar modelo (descarga automática si no existe)
             self.model = SentenceTransformer(model_name, device=device)
-            
+
             # Obtener dimensión de embeddings
             self.embedding_dimension = self.model.get_sentence_embedding_dimension()
-            
+
             # Obtener dispositivo
             self.device = self.model.device
-            
+
             logger.info(
                 f"Sentence-BERT cargado: dim={self.embedding_dimension}, "
                 f"device={self.device}"
             )
-            
+
         except Exception as e:
             logger.error(f"Error cargando Sentence-BERT: {str(e)}")
             raise

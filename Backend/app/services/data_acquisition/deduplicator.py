@@ -392,7 +392,7 @@ class Deduplicator:
         - Publicaciones originales: {len(publications)}
         - Publicaciones únicas: {len(unique_publications)}
         - Duplicados eliminados: {duplicates_found}
-        - Tasa de duplicación: {(duplicates_found / len(publications) * 100):.2f}%
+        - Tasa de duplicación: {(duplicates_found / len(publications) * 100) if len(publications) > 0 else 0:.2f}%
         """)
         
         return unique_publications, self.report

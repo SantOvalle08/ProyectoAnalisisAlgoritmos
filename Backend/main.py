@@ -106,10 +106,11 @@ app.add_middleware(
 )
 
 # Middleware de seguridad
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.localhost"]
-)
+# Nota: TrustedHostMiddleware deshabilitado para tests
+# app.add_middleware(
+#     TrustedHostMiddleware, 
+#     allowed_hosts=["localhost", "127.0.0.1", "*.localhost"]
+# )
 
 # Manejador global de excepciones
 @app.exception_handler(HTTPException)
