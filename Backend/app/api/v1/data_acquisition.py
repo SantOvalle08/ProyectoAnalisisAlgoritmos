@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 # Crear router
 router = APIRouter(
-    prefix="/api/v1/data",
+    prefix="/data",
     tags=["Data Acquisition - Requerimiento 1"]
 )
 

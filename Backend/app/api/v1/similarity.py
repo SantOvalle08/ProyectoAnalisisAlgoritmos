@@ -31,7 +31,7 @@ from app.services.ml_analysis.similarity import (
 logger = logging.getLogger(__name__)
 
 # Crear router
-router = APIRouter(prefix="/similarity", tags=["Similarity Analysis"])
+router = APIRouter(prefix="/similarity", tags=["Similarity Analysis - Requerimiento 2"])
 
 
 # ============================================================================
