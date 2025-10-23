@@ -233,11 +233,13 @@ from app.api.v1.data_acquisition import router as data_router
 from app.api.v1.similarity import router as similarity_router
 from app.api.v1.frequency import router as frequency_router
 from app.api.v1.clustering import router as clustering_router
+from app.api.v1.visualizations import router as visualizations_router
 
 app.include_router(data_router, prefix="/api/v1")
 app.include_router(similarity_router, prefix="/api/v1")
 app.include_router(frequency_router, prefix="/api/v1")
 app.include_router(clustering_router, prefix="/api/v1")
+app.include_router(visualizations_router, prefix="/api/v1")
 
 # Función principal para desarrollo
 if __name__ == "__main__":
