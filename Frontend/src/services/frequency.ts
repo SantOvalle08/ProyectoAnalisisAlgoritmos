@@ -8,7 +8,8 @@ const frequencyService = {
   extractKeywords: async (
     request: FrequencyAnalysisRequest
   ): Promise<FrequencyResult> => {
-    const response = await api.post<FrequencyResult>('/frequency/extract', request);
+    const method = request.use_tfidf ? 'tfidf' : 'frequency';
+    const response = await api.post<FrequencyResult>(`/api/v1/frequency/extract-keywords/${method}`, request);
     return response.data;
   },
 
@@ -18,7 +19,31 @@ const frequencyService = {
   analyzeConcepts: async (
     request: ConceptAnalysisRequest
   ): Promise<ConceptAnalysisResult> => {
-    const response = await api.post<ConceptAnalysisResult>('/frequency/concepts', request);
+    const response = await api.post<ConceptAnalysisResult>('/api/v1/frequency/analyze-concepts', request);
+    return response.data;
+  },
+
+  /**
+   * Health check
+   */
+  healthCheck: async (): Promise<{ status: string }> => {
+    const response = await api.get('/api/v1/frequency/health');
+    return response.data;
+  },
+
+  /**
+   * Get predefined concepts
+   */
+  getPredefinedConcepts: async (): Promise<string[]> => {
+    const response = await api.get('/api/v1/frequency/concepts');
+    return response.data;
+  },
+
+  /**
+   * Get extraction methods
+   */
+  getExtractionMethods: async (): Promise<string[]> => {
+    const response = await api.get('/api/v1/frequency/methods');
     return response.data;
   },
 };

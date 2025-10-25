@@ -8,15 +8,31 @@ const clusteringService = {
   performClustering: async (
     request: ClusteringRequest
   ): Promise<ClusteringResult> => {
-    const response = await api.post<ClusteringResult>('/clustering/analyze', request);
+    const response = await api.post<ClusteringResult>('/api/v1/clustering/hierarchical', request);
     return response.data;
   },
 
   /**
-   * Get clustering recommendations
+   * Compare different clustering methods
    */
-  getRecommendations: async (abstracts: string[]): Promise<{ recommended_clusters: number; silhouette_scores: number[] }> => {
-    const response = await api.post('/clustering/recommend', { abstracts });
+  compareMethods: async (request: ClusteringRequest): Promise<Record<string, ClusteringResult>> => {
+    const response = await api.post('/api/v1/clustering/compare', request);
+    return response.data;
+  },
+
+  /**
+   * Get available methods
+   */
+  getMethods: async (): Promise<string[]> => {
+    const response = await api.get('/api/v1/clustering/methods');
+    return response.data;
+  },
+
+  /**
+   * Health check
+   */
+  healthCheck: async (): Promise<{ status: string }> => {
+    const response = await api.get('/api/v1/clustering/health');
     return response.data;
   },
 };

@@ -21,8 +21,10 @@ export const dataAcquisitionService = {
   },
 
   // Obtener datos unificados
-  async getUnifiedData(jobId: string): Promise<Publication[]> {
-    const response = await api.get(`/api/v1/data/unified/${jobId}`);
+  async getUnifiedData(jobId?: string): Promise<Publication[]> {
+    const response = await api.get('/api/v1/data/unified', {
+      params: jobId ? { job_id: jobId } : undefined
+    });
     return response.data;
   },
 
@@ -34,8 +36,7 @@ export const dataAcquisitionService = {
 
   // Descargar archivo de resultados
   async downloadFile(jobId: string, format: string): Promise<Blob> {
-    const response = await api.get(`/api/v1/data/download/${jobId}`, {
-      params: { format },
+    const response = await api.get(`/api/v1/data/download/${jobId}/${format}`, {
       responseType: 'blob',
     });
     return response.data;
@@ -49,6 +50,12 @@ export const dataAcquisitionService = {
   // Listar fuentes disponibles
   async listSources(): Promise<string[]> {
     const response = await api.get('/api/v1/data/sources');
+    return response.data;
+  },
+
+  // Health check
+  async healthCheck(): Promise<{ status: string }> {
+    const response = await api.get('/api/v1/data/health');
     return response.data;
   },
 };
