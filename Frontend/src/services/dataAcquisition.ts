@@ -27,7 +27,7 @@ export const dataAcquisitionService = {
   },
 
   // Obtener reporte de duplicados
-  async getDuplicates(jobId: string): Promise<any> {
+  async getDuplicates(jobId: string): Promise<Record<string, unknown>> {
     const response = await api.get(`/api/v1/data/duplicates/${jobId}`);
     return response.data;
   },

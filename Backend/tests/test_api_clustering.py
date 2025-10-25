@@ -117,8 +117,10 @@ def test_01_health_check():
             return False
         
         print_result(True, "Sistema de clustering operativo")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -163,8 +165,10 @@ def test_02_list_methods():
             print(f"  - {method['method']}: {method['name']}")
         
         print_result(True, "3 métodos de linkage disponibles con documentación completa")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -254,8 +258,10 @@ def test_03_hierarchical_clustering_ward():
         print(f"Dendrograma generado: {len(data['dendrogram_base64'])} chars")
         
         print_result(True, "Clustering con Ward Linkage ejecutado correctamente")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -307,8 +313,10 @@ def test_04_hierarchical_clustering_average():
         print(f"Clusters: {data['cluster_labels']}")
         
         print_result(True, "Clustering con Average Linkage ejecutado correctamente")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -355,8 +363,10 @@ def test_05_hierarchical_clustering_complete():
         print(f"Silhouette Score: {data['silhouette_score']:.4f}")
         
         print_result(True, "Clustering con Complete Linkage ejecutado correctamente")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -431,8 +441,10 @@ def test_06_compare_methods():
             print(f"    {method}: {score:.4f}")
         
         print_result(True, f"Comparación completada - Mejor método: {data['best_method']}")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -461,8 +473,10 @@ def test_07_error_handling_few_abstracts():
             return False
         
         print_result(True, "Error de validación correctamente manejado")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -491,8 +505,10 @@ def test_08_error_handling_invalid_method():
             return False
         
         print_result(True, "Método inválido correctamente rechazado")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -530,8 +546,10 @@ def test_09_clustering_with_labels():
         print(f"Clusters asignados: {data['cluster_labels']}")
         
         print_result(True, "Clustering con etiquetas ejecutado correctamente")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -583,8 +601,10 @@ def test_10_full_dataset_clustering():
             print(f"    Cluster {i}: {count} documentos")
         
         print_result(True, "Dataset completo procesado exitosamente")
-        return True
+        
     
+
+
     except Exception as e:
         print_result(False, f"Excepción: {str(e)}")
         return False
@@ -656,3 +676,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

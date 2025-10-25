@@ -21,8 +21,9 @@ export default function DataAcquisitionPage() {
     queryKey: ['jobStatus', currentJobId],
     queryFn: () => dataAcquisitionService.getJobStatus(currentJobId!),
     enabled: !!currentJobId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Dejar de hacer polling si el trabajo terminó
+      const data = query.state.data;
       if (!data || data.status === 'completed' || data.status === 'failed') {
         return false;
       }

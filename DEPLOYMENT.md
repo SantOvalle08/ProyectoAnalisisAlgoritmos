@@ -1,446 +1,275 @@
-# 🚀 Plan de Deployment - Análisis Bibliométrico
+# 🚀 Guía de Despliegue Local - BiblioAnalysis
 
-## Resumen de lo Implementado
+Este documento describe cómo ejecutar y desplegar el proyecto **BiblioAnalysis** en un entorno de desarrollo local.
 
-### ✅ Completado hasta ahora:
-- **Paso 2**: Integración Backend-Frontend ✅
-  - Servicios del frontend conectados con APIs reales
-  - Documentación de integración completa
-  - Script de inicio automatizado
+---
 
-- **Paso 1**: Pruebas de Integración ✅
-  - Tests de similitud: 3/3 pasando
-  - Tests de clustering: 10/10 pasando
-  - Tests de frecuencia: Pendiente pero API funcional
-  - Total: 13+ tests pasando
+## 📋 Tabla de Contenidos
 
-## 📋 Paso 3: Deployment y Documentación
+1. [Requisitos Previos](#1-requisitos-previos)
+2. [Configuración del Backend](#2-configuración-del-backend)
+3. [Configuración del Frontend](#3-configuración-del-frontend)
+4. [Ejecución del Proyecto](#4-ejecución-del-proyecto)
+5. [Testing](#5-testing)
+6. [Troubleshooting](#6-troubleshooting)
 
-### 3.1 Dockerización
+---
 
-#### Backend Dockerfile
-```dockerfile
-# Backend/Dockerfile
-FROM python:3.13-slim
+## 1. Requisitos Previos
 
-WORKDIR /app
+### Software Necesario
 
-# Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+- **Python 3.13+** - Para el backend FastAPI
+- **Node.js 20+** - Para el frontend React
+- **npm 10+** - Gestor de paquetes de Node.js
+- **Git** - Control de versiones
 
-# Copiar requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+### Verificar Instalación
 
-# Copiar código fuente
-COPY . .
+```powershell
+# Verificar Python
+python --version
 
-# Descargar modelos de NLP si es necesario
-RUN python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
+# Verificar Node.js
+node --version
 
-# Exponer puerto
-EXPOSE 8000
-
-# Comando de inicio
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Verificar npm
+npm --version
 ```
 
-#### Frontend Dockerfile
-```dockerfile
-# Frontend/Dockerfile
-FROM node:20-alpine AS builder
+---
 
-WORKDIR /app
+## 2. Configuración del Backend
 
-# Copiar package files
-COPY package*.json ./
-RUN npm ci
+### 2.1 Instalar Dependencias
 
-# Copiar código fuente
-COPY . .
-
-# Build
-ENV VITE_API_URL=http://localhost:8000
-RUN npm run build
-
-# Production stage
-FROM nginx:alpine
-
-# Copiar build
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copiar configuración nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-#### docker-compose.yml
-```yaml
-version: '3.8'
-
-services:
-  backend:
-    build: ./Backend
-    container_name: analisis-backend
-    ports:
-      - "8000:8000"
-    environment:
-      - ENVIRONMENT=production
-      - LOG_LEVEL=info
-    volumes:
-      - ./Backend/data:/app/data
-      - ./Backend/logs:/app/logs
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  frontend:
-    build: ./Frontend
-    container_name: analisis-frontend
-    ports:
-      - "80:80"
-    environment:
-      - VITE_API_URL=http://localhost:8000
-    depends_on:
-      - backend
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  backend_data:
-  backend_logs:
-```
-
-### 3.2 Configuración de Nginx
-
-```nginx
-# Frontend/nginx.conf
-server {
-    listen 80;
-    server_name localhost;
-    root /usr/share/nginx/html;
-    index index.html;
-
-    # Gzip compression
-    gzip on;
-    gzip_vary on;
-    gzip_min_length 1024;
-    gzip_types text/plain text/css text/xml text/javascript 
-               application/x-javascript application/xml+rss 
-               application/javascript application/json;
-
-    # SPA fallback
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Cache static assets
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Proxy API requests to backend
-    location /api/ {
-        proxy_pass http://backend:8000/api/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-### 3.3 Variables de Entorno
-
-#### Producción
-```env
-# Backend/.env.production
-ENVIRONMENT=production
-LOG_LEVEL=warning
-CORS_ORIGINS=https://your-domain.com
-MAX_DOWNLOAD_SIZE=10000
-CACHE_TTL=3600
-```
-
-```env
-# Frontend/.env.production
-VITE_API_URL=https://api.your-domain.com
-VITE_ENV=production
-```
-
-### 3.4 Scripts de Deployment
-
-#### build.sh
-```bash
-#!/bin/bash
-# Build script for deployment
-
-echo "🏗️  Building project..."
-
-# Build backend
-echo "📦 Building backend..."
+```powershell
 cd Backend
 pip install -r requirements.txt
-python -m pytest tests/ -v
-cd ..
-
-# Build frontend
-echo "🎨 Building frontend..."
-cd Frontend
-npm ci
-npm run build
-cd ..
-
-echo "✅ Build complete!"
 ```
 
-#### deploy.sh
-```bash
-#!/bin/bash
-# Deployment script
+### 2.2 Descargar Modelos de NLP
 
-echo "🚀 Deploying application..."
-
-# Stop existing containers
-docker-compose down
-
-# Build and start new containers
-docker-compose up -d --build
-
-# Wait for services to be healthy
-echo "⏳ Waiting for services..."
-sleep 10
-
-# Check health
-curl -f http://localhost:8000/health || exit 1
-curl -f http://localhost || exit 1
-
-echo "✅ Deployment successful!"
-echo "📌 Backend: http://localhost:8000"
-echo "📌 Frontend: http://localhost"
-echo "📌 API Docs: http://localhost:8000/docs"
+```powershell
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
 ```
 
-### 3.5 CI/CD con GitHub Actions
+### 2.3 Variables de Entorno (Opcional)
 
-```.github/workflows/deploy.yml
-name: Deploy
+El backend funciona con configuración por defecto. Si deseas personalizar:
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-      
-      - name: Install dependencies
-        run: |
-          cd Backend
-          pip install -r requirements.txt
-      
-      - name: Run tests
-        run: |
-          cd Backend
-          pytest tests/ -v
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
-      - name: Build frontend
-        run: |
-          cd Frontend
-          npm ci
-          npm run build
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to server
-        run: |
-          # Add your deployment commands here
-          echo "Deploying to production..."
+```env
+# Backend/.env
+ENVIRONMENT=development
+LOG_LEVEL=INFO
+DUPLICATE_THRESHOLD=0.95
 ```
 
-### 3.6 Documentación Final
+---
 
-#### README.md Principal
-```markdown
-# Sistema de Análisis Bibliométrico
+## 3. Configuración del Frontend
 
-Sistema completo para análisis bibliométrico con descarga automatizada,
-análisis de similitud, frecuencias, clustering y visualizaciones.
+### 3.1 Instalar Dependencias
 
-## 🚀 Quick Start
-
-### Con Docker (Recomendado)
-\`\`\`bash
-docker-compose up -d
-\`\`\`
-
-### Manual
-\`\`\`bash
-# Backend
-cd Backend
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-
-# Frontend
+```powershell
 cd Frontend
 npm install
-npm run dev
-\`\`\`
-
-## 📚 Documentación
-- [Guía de Integración](./INTEGRACION.md)
-- [Plan de Pruebas](./PRUEBAS_INTEGRACION.md)
-- [Estado del Proyecto](./ESTADO_ACTUAL_PROYECTO.md)
-- [API Documentation](http://localhost:8000/docs)
-
-## 🧪 Tests
-\`\`\`bash
-cd Backend
-pytest tests/ -v
-\`\`\`
-
-## 📊 Características
-- ✅ Descarga multi-fuente (CrossRef, ACM, IEEE, etc.)
-- ✅ 6 Algoritmos de similitud textual
-- ✅ Análisis de frecuencias con TF-IDF
-- ✅ Clustering jerárquico (Ward, Average, Complete)
-- ✅ Visualizaciones interactivas (Word clouds, mapas, timelines)
-- ✅ API REST completa con FastAPI
-- ✅ Frontend moderno con React + TypeScript
-- ✅ Documentación automática con Swagger/OpenAPI
-
-## 👥 Autores
-- Santiago Ovalle Cortés
-- Juan Sebastián Noreña
-
-## 📄 Licencia
-MIT License
-\`\`\`
-
-### 3.7 Optimización
-
-#### Frontend
-- [ ] Code splitting
-- [ ] Lazy loading de rutas
-- [ ] Tree shaking
-- [ ] Compresión de assets
-- [ ] Service Worker para PWA
-
-#### Backend
-- [ ] Caché de resultados
-- [ ] Rate limiting
-- [ ] Compresión de respuestas
-- [ ] Optimización de queries
-- [ ] Connection pooling
-
-### 3.8 Monitoring y Logs
-
-#### Configuración de Logs
-```python
-# Backend/app/config/logging_config.py
-import logging
-from logging.handlers import RotatingFileHandler
-
-def setup_logging():
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    
-    # File handler
-    fh = RotatingFileHandler(
-        'logs/app.log',
-        maxBytes=10485760,  # 10MB
-        backupCount=10
-    )
-    
-    # Console handler
-    ch = logging.StreamHandler()
-    
-    # Formatter
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
-    
-    logger.addHandler(fh)
-    logger.addHandler(ch)
 ```
 
-## ✅ Checklist de Deployment
+### 3.2 Variables de Entorno
 
-### Pre-deployment
-- [ ] Todos los tests pasando
-- [ ] Documentación actualizada
-- [ ] Variables de entorno configuradas
-- [ ] Secrets configurados
-- [ ] Base de datos lista (si aplica)
+Crea un archivo `.env` en `Frontend/`:
 
-### Deployment
-- [ ] Dockerfiles creados
-- [ ] docker-compose.yml configurado
-- [ ] nginx configurado
-- [ ] Build exitoso
-- [ ] Health checks funcionando
+```env
+VITE_API_BASE_URL=http://localhost:8000
+VITE_APP_NAME=BiblioAnalysis
+VITE_ENVIRONMENT=development
+```
 
-### Post-deployment
-- [ ] Verificar URLs funcionando
-- [ ] Verificar logs sin errores
-- [ ] Pruebas de carga
-- [ ] Monitoreo activo
-- [ ] Backups configurados
+---
 
-## 🎯 Próximos Pasos
+## 4. Ejecución del Proyecto
 
-1. **Crear Dockerfiles** ✅ (Documentado)
-2. **Configurar docker-compose** ✅ (Documentado)
-3. **Crear scripts de deployment** ✅ (Documentado)
-4. **Configurar CI/CD** ✅ (Documentado)
-5. **Documentación final** ✅ (Documentado)
-6. **Testing en producción** ⏳ Pendiente
-7. **Monitoreo y alertas** ⏳ Pendiente
-8. **Optimizaciones** ⏳ Pendiente
+### 4.1 Opción Automática (Recomendada)
 
-## 📝 Notas
+Usa el script de inicio que lanza ambos servidores:
 
-- Backend probado y funcional con 13+ tests pasando
-- Frontend completamente integrado con backend
-- Documentación completa de integración disponible
-- Listo para deployment con Docker
+```powershell
+# Desde la raíz del proyecto
+.\start-project.ps1
+```
+
+Este script:
+- ✅ Inicia el backend en `http://localhost:8000`
+- ✅ Inicia el frontend en `http://localhost:5173`
+- ✅ Abre ambos servidores en ventanas separadas de PowerShell
+
+### 4.2 Opción Manual
+
+**Terminal 1 - Backend:**
+```powershell
+cd Backend
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```powershell
+cd Frontend
+npm run dev
+```
+
+### 4.3 URLs de Acceso
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Docs (Swagger)**: http://localhost:8000/docs
+- **API Docs (ReDoc)**: http://localhost:8000/redoc
+
+---
+
+## 5. Testing
+
+### 5.1 Tests del Backend
+
+```powershell
+cd Backend
+
+# Ejecutar todos los tests
+pytest tests/ -v
+
+# Tests específicos
+pytest tests/test_similarity_api.py -v
+pytest tests/test_api_clustering.py -v
+pytest tests/test_api_frequency.py -v
+
+# Con cobertura
+pytest tests/ -v --cov=app --cov-report=html
+```
+
+### 5.2 Tests del Frontend
+
+```powershell
+cd Frontend
+
+# Linter
+npm run lint
+
+# Build de producción (verifica errores de TypeScript)
+npm run build
+```
+
+### 5.3 Tests de Integración
+
+Ver `PRUEBAS_INTEGRACION.md` para el plan completo de tests.
+
+**Checklist rápido:**
+1. ✅ Backend responde en `/health`
+2. ✅ Frontend carga correctamente
+3. ✅ API de similitud funciona
+4. ✅ API de clustering funciona
+5. ✅ API de frecuencias funciona
+6. ✅ Visualizaciones se generan correctamente
+
+---
+
+## 6. Troubleshooting
+
+### 6.1 Puerto 8000 ya en uso
+
+```powershell
+# Windows - Encontrar proceso usando el puerto
+netstat -ano | findstr :8000
+
+# Matar proceso (reemplaza PID)
+taskkill /PID <PID> /F
+```
+
+### 6.2 Puerto 5173 ya en uso
+
+```powershell
+# Windows - Encontrar y matar proceso
+netstat -ano | findstr :5173
+taskkill /PID <PID> /F
+```
+
+### 6.3 Error de CORS
+
+Asegúrate de que el backend esté configurado correctamente:
+
+```python
+# Backend/main.py debe tener:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+### 6.4 Módulos de Python faltantes
+
+```powershell
+cd Backend
+pip install -r requirements.txt --upgrade
+```
+
+### 6.5 Dependencias de Node.js desactualizadas
+
+```powershell
+cd Frontend
+npm ci  # Instalación limpia según package-lock.json
+```
+
+### 6.6 Error "Cannot find module"
+
+```powershell
+# Reiniciar TypeScript Server en VS Code
+# Presiona Ctrl+Shift+P -> "TypeScript: Restart TS Server"
+
+# O reconstruir
+cd Frontend
+npm run build
+```
+
+---
+
+## 📚 Documentación Adicional
+
+- **[README.md](./README.md)** - Información general del proyecto
+- **[INTEGRACION.md](./INTEGRACION.md)** - Documentación de integración Backend-Frontend
+- **[PRUEBAS_INTEGRACION.md](./PRUEBAS_INTEGRACION.md)** - Plan de pruebas
+- **[ESTADO_ACTUAL_PROYECTO.md](./ESTADO_ACTUAL_PROYECTO.md)** - Estado del desarrollo
+
+---
+
+## 🎯 Quick Start
+
+```powershell
+# 1. Clonar repositorio
+git clone <repo-url>
+cd ProyectoAnalisisAlgoritmos
+
+# 2. Instalar dependencias del backend
+cd Backend
+pip install -r requirements.txt
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+cd ..
+
+# 3. Instalar dependencias del frontend
+cd Frontend
+npm install
+cd ..
+
+# 4. Iniciar proyecto
+.\start-project.ps1
+```
+
+---
+
+## 👥 Autores
+
+- **Santiago Ovalle Cortés**
+- **Juan Sebastián Noreña**
+
+**Universidad del Quindío** - 2025

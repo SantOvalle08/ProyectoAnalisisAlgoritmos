@@ -126,7 +126,7 @@ def test_health_check():
             assert "pdf_export" in data["modules"], "Debe incluir módulo pdf_export"
             
             print("✓ Health check pasado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -187,7 +187,7 @@ def test_wordcloud_generation():
                 print(f"⚠ No se pudo guardar imagen: {e}")
             
             print("✓ Word cloud generado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -229,7 +229,7 @@ def test_heatmap_choropleth():
             print(f"  Tamaño HTML: {len(html_content)} caracteres")
             
             print("✓ Mapa coroplético generado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -272,7 +272,7 @@ def test_heatmap_bar():
             print(f"  Tamaño HTML: {len(html_content)} caracteres")
             
             print("✓ Gráfico de barras generado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -314,7 +314,7 @@ def test_timeline_simple():
             print(f"  Tamaño HTML: {len(html_content)} caracteres")
             
             print("✓ Timeline simple generado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -357,7 +357,7 @@ def test_timeline_by_journal():
             print(f"  Tamaño HTML: {len(html_content)} caracteres")
             
             print("✓ Timeline por revista generado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -402,7 +402,7 @@ def test_pdf_export():
             print(f"  Tamaño PDF: {len(pdf_content)} bytes")
             
             print("✓ PDF exportado correctamente")
-            return True
+            
         else:
             print(f"✗ Error: Status code {response.status_code}")
             print(f"Response: {response.text}")
@@ -447,7 +447,7 @@ def run_all_tests():
     
     if passed == total:
         print("\n🎉 ¡TODAS LAS PRUEBAS PASARON!")
-        return True
+        
     else:
         print(f"\n⚠️  {total - passed} prueba(s) fallaron")
         return False
@@ -463,3 +463,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n\nError fatal: {e}")
         exit(1)
+
+

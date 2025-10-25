@@ -212,9 +212,9 @@ curl http://localhost:8000/api/download/sources
 ### Después (Paso 3 - Deployment)
 1. [ ] Optimizar bundle del frontend
 2. [ ] Configurar variables de entorno de producción
-3. [ ] Preparar Dockerfiles
-4. [ ] Configurar CI/CD
-5. [ ] Documentación de deployment
+3. [ ] Preparar scripts de inicio
+4. [ ] Documentación de deployment
+5. [ ] Validación de tests completa
 
 ## 📝 Notas
 

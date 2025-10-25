@@ -47,7 +47,7 @@ export interface SimilarityResult {
   similarity: number;
   distance?: number;
   execution_time: number;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 export interface BatchSimilarityRequest {
@@ -98,7 +98,7 @@ export interface ClusteringResult {
   clusters: number[];
   num_clusters: number;
   silhouette_score: number;
-  dendrogram_data?: any;
+  dendrogram_data?: unknown;
   cluster_labels?: string[];
 }
 
@@ -151,14 +151,14 @@ export interface PDFExportRequest {
     heatmap?: HeatmapResult;
     timeline?: TimelineResult;
   };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Tipos para la UI
 export interface NavItem {
   name: string;
   href: string;
-  icon?: any;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 export interface LoadingState {

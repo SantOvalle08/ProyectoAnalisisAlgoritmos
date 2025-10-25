@@ -13,7 +13,7 @@ University: Universidad del Quindío - Análisis de Algoritmos
 """
 
 from fastapi import APIRouter, HTTPException, Query, Body
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional, Literal
 from enum import Enum
 import logging
@@ -44,8 +44,8 @@ class AnalyzeConceptsRequest(BaseModel):
     """Request para analizar conceptos predefinidos."""
     abstracts: List[str] = Field(
         ...,
-        min_items=1,
-        max_items=1000,
+        min_length=1,
+        max_length=1000,
         description="Lista de abstracts a analizar"
     )
     concepts: Optional[List[str]] = Field(
@@ -57,7 +57,8 @@ class AnalyzeConceptsRequest(BaseModel):
         description="Incluir contextos donde aparecen los conceptos"
     )
     
-    @validator('abstracts')
+    @field_validator('abstracts')
+    @classmethod
     def validate_abstracts(cls, v):
         """Valida que los abstracts no estén vacíos."""
         for i, abstract in enumerate(v):
@@ -70,8 +71,8 @@ class ExtractKeywordsRequest(BaseModel):
     """Request para extraer keywords automáticamente."""
     abstracts: List[str] = Field(
         ...,
-        min_items=1,
-        max_items=1000,
+        min_length=1,
+        max_length=1000,
         description="Lista de abstracts"
     )
     max_keywords: int = Field(
@@ -98,8 +99,8 @@ class PrecisionAnalysisRequest(BaseModel):
     """Request para análisis de precisión."""
     abstracts: List[str] = Field(
         ...,
-        min_items=1,
-        max_items=1000
+        min_length=1,
+        max_length=1000
     )
     predefined_concepts: Optional[List[str]] = Field(
         default=None,
@@ -117,7 +118,7 @@ class PrecisionAnalysisRequest(BaseModel):
 
 class FullReportRequest(BaseModel):
     """Request para reporte completo."""
-    abstracts: List[str] = Field(..., min_items=1, max_items=1000)
+    abstracts: List[str] = Field(..., min_length=1, max_length=1000)
     predefined_concepts: Optional[List[str]] = Field(default=None)
     max_keywords: int = Field(default=15, ge=1, le=50)
 

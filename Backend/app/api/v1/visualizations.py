@@ -51,7 +51,7 @@ class WordCloudRequest(BaseModel):
     """Request para nube de palabras."""
     publications: List[PublicationInput] = Field(
         ...,
-        min_items=1,
+        min_length=1,
         description="Lista de publicaciones a analizar"
     )
     include_keywords: bool = Field(
@@ -78,7 +78,7 @@ class HeatmapRequest(BaseModel):
     """Request para mapa de calor geográfico."""
     publications: List[PublicationInput] = Field(
         ...,
-        min_items=1,
+        min_length=1,
         description="Lista de publicaciones a analizar"
     )
     map_type: str = Field(
@@ -101,7 +101,7 @@ class TimelineRequest(BaseModel):
     """Request para línea temporal."""
     publications: List[PublicationInput] = Field(
         ...,
-        min_items=1,
+        min_length=1,
         description="Lista de publicaciones a analizar"
     )
     group_by_journal: bool = Field(
@@ -124,7 +124,7 @@ class PDFExportRequest(BaseModel):
     """Request para exportación a PDF."""
     publications: List[PublicationInput] = Field(
         ...,
-        min_items=1,
+        min_length=1,
         description="Lista de publicaciones a analizar"
     )
     include_wordcloud: bool = Field(default=True)

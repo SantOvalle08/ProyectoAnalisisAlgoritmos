@@ -13,7 +13,7 @@ University: Universidad del Quindío - Análisis de Algoritmos
 """
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Dict, Any, List, Optional, Literal
 from enum import Enum
 import logging
@@ -94,7 +94,8 @@ class CompareRequest(BaseModel):
         description="Número máximo de features para TF-IDF"
     )
     
-    @validator('text1', 'text2')
+    @field_validator('text1', 'text2')
+    @classmethod
     def validate_text_not_empty(cls, v):
         """Valida que los textos no estén vacíos o solo con espacios."""
         if not v or not v.strip():
@@ -128,7 +129,8 @@ class AnalyzeRequest(BaseModel):
     bert_pooling: Optional[Literal['cls', 'mean']] = Field(default='mean')
     tfidf_max_features: Optional[int] = Field(default=5000, ge=100, le=50000)
     
-    @validator('algorithm')
+    @field_validator('algorithm')
+    @classmethod
     def validate_algorithm_not_all(cls, v):
         """Valida que no se use 'all' para análisis detallado."""
         if v == AlgorithmType.ALL:
@@ -140,8 +142,8 @@ class BatchCompareRequest(BaseModel):
     """Request para comparar múltiples pares de textos."""
     pairs: List[Dict[str, str]] = Field(
         ...,
-        min_items=1,
-        max_items=100,
+        min_length=1,
+        max_length=100,
         description="Lista de pares de textos a comparar"
     )
     algorithm: AlgorithmType = Field(
@@ -149,7 +151,8 @@ class BatchCompareRequest(BaseModel):
         description="Algoritmo a utilizar"
     )
     
-    @validator('pairs')
+    @field_validator('pairs')
+    @classmethod
     def validate_pairs_format(cls, v):
         """Valida formato de los pares."""
         for i, pair in enumerate(v):
@@ -162,22 +165,21 @@ class BatchCompareRequest(BaseModel):
 
 class SimilarityResult(BaseModel):
     """Resultado de comparación de similitud."""
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "algorithm": "Sentence-BERT Similarity",
+            "algorithm_type": "AI-Based",
+            "similarity": 0.85,
+            "similarity_percentage": "85.00%",
+            "execution_time_seconds": 0.023
+        }
+    })
+    
     algorithm: str
     algorithm_type: str
     similarity: float = Field(ge=0.0, le=1.0, description="Similitud entre 0 y 1")
     similarity_percentage: str
     execution_time_seconds: Optional[float] = None
-    
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "algorithm": "Sentence-BERT Similarity",
-                "algorithm_type": "AI-based",
-                "similarity": 0.8947,
-                "similarity_percentage": "89.47%",
-                "execution_time_seconds": 0.08
-            }
-        }
 
 
 class AlgorithmInfo(BaseModel):

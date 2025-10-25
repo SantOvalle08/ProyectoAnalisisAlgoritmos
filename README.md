@@ -169,47 +169,42 @@ CREATE EXTENSION IF NOT EXISTS vector;     -- Embeddings vectoriales
 CREATE EXTENSION IF NOT EXISTS btree_gin;  -- Índices optimizados
 ```
 
-### **Despliegue y DevOps**
-- **Contenedorización:** Docker + Docker Compose
-- **Orquestación:** Kubernetes (opcional)
-- **CI/CD:** GitHub Actions
-- **Monitoreo:** Prometheus + Grafana
-- **Cloud:** AWS/GCP con servicios gestionados
+### **Despliegue**
+- **Desarrollo:** Scripts automatizados (PowerShell)
+- **Testing:** pytest, npm test
+- **Monitoreo:** Logs integrados en Backend/logs/
 
 ## Estructura del Proyecto
 
 ```
 ProyectoAnalisisAlgoritmos/
-├── 📁 backend/
-│   ├── 📁 services/
-│   │   ├── data_acquisition/     # Descarga y unificación de datos
-│   │   ├── ml_analysis/          # Algoritmos ML y similitud
-│   │   ├── analytics/            # Métricas y frecuencias
-│   │   └── visualization/        # Generación de visualizaciones
-│   ├── 📁 models/               # Modelos de datos
-│   ├── 📁 utils/                # Utilidades compartidas
-│   └── 📁 config/               # Configuraciones
-├── 📁 frontend/
-│   ├── 📁 components/           # Componentes React
-│   ├── 📁 pages/                # Páginas de la aplicación
-│   ├── 📁 hooks/                # Custom hooks
-│   ├── 📁 utils/                # Utilidades frontend
-│   └── 📁 styles/               # Estilos y temas
-├── 📁 database/
-│   ├── 📁 migrations/           # Migraciones de BD
-│   ├── 📁 schemas/              # Esquemas PostgreSQL
-│   └── 📁 seeds/                # Datos de prueba
-├── 📁 docs/
-│   ├── 📁 architecture/         # Documentación técnica
-│   ├── 📁 algorithms/           # Explicaciones matemáticas
-│   └── 📁 api/                  # Documentación API
-├── 📁 notebooks/                # Jupyter Notebooks de análisis
-├── 📁 data/                     # Datasets y resultados
-├── 📁 tests/                    # Tests automatizados
-├── 📁 docker/                   # Configuraciones Docker
-├── requirements.txt             # Dependencias Python
-├── package.json                 # Dependencias Node.js
-└── docker-compose.yml           # Orquestación de servicios
+├── 📁 Backend/
+│   ├── 📁 app/
+│   │   ├── 📁 api/              # Endpoints REST
+│   │   ├── 📁 services/         # Lógica de negocio
+│   │   ├── 📁 models/           # Modelos de datos
+│   │   ├── 📁 utils/            # Utilidades compartidas
+│   │   └── 📁 config/           # Configuraciones
+│   ├── 📁 tests/                # Tests automatizados
+│   ├── 📁 data/                 # Datasets y resultados
+│   ├── 📁 logs/                 # Logs del sistema
+│   ├── main.py                  # Punto de entrada FastAPI
+│   └── requirements.txt         # Dependencias Python
+├── 📁 Frontend/
+│   ├── 📁 src/
+│   │   ├── 📁 components/       # Componentes React
+│   │   ├── 📁 pages/            # Páginas de la aplicación
+│   │   ├── 📁 services/         # Cliente API
+│   │   ├── 📁 types/            # Tipos TypeScript
+│   │   └── 📁 utils/            # Utilidades frontend
+│   ├── 📁 public/               # Archivos estáticos
+│   ├── package.json             # Dependencias Node.js
+│   └── vite.config.ts           # Configuración Vite
+├── 📁 data/                     # Datos de descarga
+├── 📄 start-project.ps1         # Script de inicio rápido
+├── 📄 DEPLOYMENT.md             # Guía de despliegue
+├── 📄 INTEGRACION.md            # Documentación de integración
+└── 📄 README.md                 # Este archivo
 ```
 
 ## Algoritmos Implementados
@@ -237,80 +232,74 @@ ProyectoAnalisisAlgoritmos/
 ## Instalación y Configuración
 
 ### **Prerrequisitos**
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL 15+
-- Docker & Docker Compose (opcional)
+- Python 3.13+
+- Node.js 20+
+- npm 10+
 - Git
 
-### **Instalación Rápida con Docker**
-```bash
-# Clonar el repositorio
+### **Instalación Rápida (Recomendada)**
+
+```powershell
+# 1. Clonar el repositorio
 git clone https://github.com/SantOvalle08/ProyectoAnalisisAlgoritmos.git
 cd ProyectoAnalisisAlgoritmos
 
-# Levantar todos los servicios
-docker-compose up -d
+# 2. Instalar dependencias del backend
+cd Backend
+pip install -r requirements.txt
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+cd ..
 
-# La aplicación estará disponible en:
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:8000
-# Base de datos: localhost:5432
+# 3. Instalar dependencias del frontend
+cd Frontend
+npm install
+cd ..
+
+# 4. Iniciar ambos servidores automáticamente
+.\start-project.ps1
 ```
+
+La aplicación estará disponible en:
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
 
 ### **Instalación Manual**
 
-#### Backend (Python)
-```bash
-# Crear entorno virtual
+#### Backend (Python + FastAPI)
+```powershell
+cd Backend
+
+# Crear entorno virtual (opcional)
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+.\venv\Scripts\activate  # Windows
 
 # Instalar dependencias
 pip install -r requirements.txt
 
-# Configurar base de datos
-createdb bibliometric_analysis
-python manage.py migrate
-
 # Descargar modelos de NLP
-python -m spacy download es_core_news_sm
-python -m spacy download en_core_web_sm
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
 
 # Ejecutar servidor
-uvicorn main:app --reload --port 8000
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-#### Frontend (React)
-```bash
-cd frontend/
+#### Frontend (React + TypeScript)
+```powershell
+cd Frontend
 
 # Instalar dependencias
 npm install
 
-# Configurar variables de entorno
-cp .env.example .env.local
+# Configurar variables de entorno (opcional)
+# Crear archivo .env con:
+# VITE_API_BASE_URL=http://localhost:8000
 
 # Ejecutar en desarrollo
 npm run dev
 
 # Construir para producción
 npm run build
-```
-
-#### Base de Datos (PostgreSQL)
-```sql
--- Crear base de datos
-CREATE DATABASE bibliometric_analysis;
-
--- Crear extensiones necesarias
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE EXTENSION IF NOT EXISTS vector;
-CREATE EXTENSION IF NOT EXISTS btree_gin;
-
--- Ejecutar migraciones
-\i database/schemas/publications.sql
-\i database/schemas/analysis_results.sql
 ```
 
 ## Uso del Sistema
