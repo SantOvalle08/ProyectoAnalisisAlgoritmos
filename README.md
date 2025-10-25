@@ -427,9 +427,8 @@ python -m pytest tests/test_benchmarks.py -v
 **Universidad del Quindío**
 
 ### **Autores**
-- **Santiago Ovalle Cortés** - Desarrollo Backend & ML
-- **Juan Sebastián Noreña** - Desarrollo Frontend & UI/UX
-
+- **Santiago Ovalle Cortés** - Desarrollo Backend/Frontend y UI/UX
+- **Juan Sebastián Noreña** - Desarrollo Backend & ML
 ### **Supervisor Académico**
 - **Carlos Andres Flores Villaraga** - Docente del curso
 

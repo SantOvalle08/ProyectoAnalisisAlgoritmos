@@ -50,8 +50,8 @@ const features = [
 
 const stats = [
   { label: 'Algoritmos Implementados', value: '12+' },
-  { label: 'Tests Pasando', value: '102/103' },
-  { label: 'Cobertura de Tests', value: '99%' },
+  { label: 'Tests Pasando', value: '132/133' },
+  { label: 'Cobertura de Tests', value: '64%+' },
   { label: 'APIs REST', value: '5' },
 ];
 
