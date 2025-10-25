@@ -1,0 +1,145 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      working-directory: ./Backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+    
+    - name: Run tests
+      working-directory: ./Backend
+      run: |
+        pytest tests/ -v --cov=app --cov-report=xml
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./Backend/coverage.xml
+        flags: backend
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
+    - name: Install dependencies
+      working-directory: ./Frontend
+      run: npm ci
+    
+    - name: Run linter
+      working-directory: ./Frontend
+      run: npm run lint
+    
+    - name: Build
+      working-directory: ./Frontend
+      run: npm run build
+
+  build-and-push:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build Backend Image
+      working-directory: ./Backend
+      run: |
+        docker build -t biblioanalysis-backend:latest .
+    
+    - name: Build Frontend Image
+      working-directory: ./Frontend
+      run: |
+        docker build -t biblioanalysis-frontend:latest .
+    
+    - name: Test Docker Compose
+      run: |
+        docker-compose up -d
+        sleep 30
+        docker-compose ps
+        docker-compose logs
+        docker-compose down
+    
+    # Opcional: Push a Docker Hub o GitHub Container Registry
+    # - name: Login to Docker Hub
+    #   uses: docker/login-action@v2
+    #   with:
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    # - name: Push images
+    #   run: |
+    #     docker push biblioanalysis-backend:latest
+    #     docker push biblioanalysis-frontend:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy notification
+      run: |
+        echo "🚀 Deployment ready!"
+        echo "Images built successfully"
+        
+    # Aquí agregar steps de deployment real según tu infraestructura:
+    # - SSH deployment
+    # - Kubernetes deployment
+    # - Cloud provider specific deployment
+    # Ejemplo para SSH:
+    # - name: Deploy to server
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.SERVER_HOST }}
+    #     username: ${{ secrets.SERVER_USERNAME }}
+    #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #     script: |
+    #       cd /path/to/app
+    #       git pull origin main
+    #       docker-compose down
+    #       docker-compose up -d --build
