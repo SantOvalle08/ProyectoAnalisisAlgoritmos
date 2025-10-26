@@ -7,9 +7,13 @@ const frequencyService = {
    */
   extractKeywords: async (
     request: FrequencyAnalysisRequest
-  ): Promise<FrequencyResult> => {
+  ): Promise<FrequencyResult[]> => {
     const method = request.use_tfidf ? 'tfidf' : 'frequency';
-    const response = await api.post<FrequencyResult>(`/api/v1/frequency/extract-keywords/${method}`, request);
+    const response = await api.post<FrequencyResult[]>('/api/v1/frequency/extract-keywords', {
+      ...request,
+      method,
+      use_tfidf: undefined, // Remove use_tfidf as backend expects method instead
+    });
     return response.data;
   },
 

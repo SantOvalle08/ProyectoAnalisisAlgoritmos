@@ -145,7 +145,8 @@ class UnifiedDownloader:
         max_results_per_source: int = 100,
         start_year: Optional[int] = None,
         end_year: Optional[int] = None,
-        export_formats: Optional[List[ExportFormat]] = None
+        export_formats: Optional[List[ExportFormat]] = None,
+        job_id: Optional[str] = None
     ) -> DownloadJob:
         """
         Descarga publicaciones desde múltiples fuentes de manera unificada.
@@ -157,17 +158,26 @@ class UnifiedDownloader:
             start_year: Año de inicio para filtrar
             end_year: Año final para filtrar
             export_formats: Formatos de exportación adicionales
+            job_id: ID del job (opcional, se genera automáticamente si no se proporciona)
         
         Returns:
             DownloadJob con resultados y estadísticas
         """
         # Crear job
-        job_id = self._generate_job_id()
-        job = DownloadJob(job_id, query, sources, max_results_per_source)
-        job.started_at = datetime.now()
-        job.status = "running"
+        if job_id is None:
+            job_id = self._generate_job_id()
         
-        self.active_jobs[job_id] = job
+        # Si el job ya existe (fue registrado externamente), actualizarlo
+        # Si no existe, crear uno nuevo
+        if job_id in self.active_jobs:
+            job = self.active_jobs[job_id]
+            logger.info(f"Reanudando job existente {job_id}")
+        else:
+            job = DownloadJob(job_id, query, sources, max_results_per_source)
+            job.started_at = datetime.now()
+            job.status = "running"
+            self.active_jobs[job_id] = job
+            logger.info(f"Creando nuevo job {job_id}")
         
         logger.info(f"Iniciando job {job_id}: query='{query}', sources={sources}")
         

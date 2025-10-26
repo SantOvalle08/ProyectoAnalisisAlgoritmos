@@ -27,6 +27,10 @@ export default function VisualizationsPage() {
         max_words: maxWords,
       });
     },
+    onError: (error) => {
+      console.error('Error generando wordcloud:', error);
+      alert('Error al generar nube de palabras. Verifica que el JSON sea válido y contenga los campos necesarios.');
+    },
   });
 
   const heatmapMutation = useMutation({
@@ -37,6 +41,10 @@ export default function VisualizationsPage() {
         map_type: mapType,
       });
     },
+    onError: (error) => {
+      console.error('Error generando heatmap:', error);
+      alert('Error al generar mapa de calor. Verifica que el JSON sea válido y contenga los campos necesarios (authors con país).');
+    },
   });
 
   const timelineMutation = useMutation({
@@ -46,6 +54,10 @@ export default function VisualizationsPage() {
         publications,
         group_by_journal: timelineType === 'journal',
       });
+    },
+    onError: (error) => {
+      console.error('Error generando timeline:', error);
+      alert('Error al generar línea temporal. Verifica que el JSON sea válido y contenga los campos necesarios (year, journal).');
     },
   });
 
@@ -76,21 +88,52 @@ export default function VisualizationsPage() {
     const example = [
       {
         title: 'Machine Learning in Healthcare',
-        authors: 'John Doe, Jane Smith',
+        authors: [
+          { name: 'John Doe', affiliation: 'MIT', country: 'United States' },
+          { name: 'Jane Smith', affiliation: 'Stanford', country: 'United States' }
+        ],
         year: 2023,
+        journal: 'Nature Medicine',
         abstract: 'Machine learning algorithms are transforming healthcare with predictive analytics and diagnosis.',
-        keywords: ['machine learning', 'healthcare', 'AI'],
+        keywords: ['machine learning', 'healthcare', 'AI', 'predictive analytics'],
         source: 'IEEE',
         doi: '10.1109/example.2023',
       },
       {
         title: 'Deep Learning for Image Recognition',
-        authors: 'Alice Johnson',
+        authors: [
+          { name: 'Alice Johnson', affiliation: 'Oxford University', country: 'United Kingdom' }
+        ],
         year: 2022,
+        journal: 'IEEE Transactions on Pattern Analysis',
         abstract: 'Deep neural networks achieve state-of-the-art results in computer vision tasks.',
-        keywords: ['deep learning', 'computer vision', 'neural networks'],
+        keywords: ['deep learning', 'computer vision', 'neural networks', 'image recognition'],
         source: 'ACM',
         doi: '10.1145/example.2022',
+      },
+      {
+        title: 'Natural Language Processing with Transformers',
+        authors: [
+          { name: 'Carlos García', affiliation: 'Universidad Complutense', country: 'Spain' }
+        ],
+        year: 2023,
+        journal: 'Computational Linguistics',
+        abstract: 'Transformer architectures revolutionize NLP tasks with attention mechanisms.',
+        keywords: ['natural language processing', 'transformers', 'attention', 'NLP'],
+        source: 'CrossRef',
+        doi: '10.1162/example.2023',
+      },
+      {
+        title: 'Reinforcement Learning in Robotics',
+        authors: [
+          { name: 'Yuki Tanaka', affiliation: 'University of Tokyo', country: 'Japan' }
+        ],
+        year: 2022,
+        journal: 'Robotics and Autonomous Systems',
+        abstract: 'Reinforcement learning enables robots to learn complex behaviors through trial and error.',
+        keywords: ['reinforcement learning', 'robotics', 'autonomous systems', 'AI'],
+        source: 'ScienceDirect',
+        doi: '10.1016/example.2022',
       },
     ];
     setPublicationsJson(JSON.stringify(example, null, 2));
@@ -189,7 +232,7 @@ export default function VisualizationsPage() {
               onChange={(e) => setPublicationsJson(e.target.value)}
               rows={12}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-xs"
-              placeholder='[{"title": "...", "authors": "...", "year": 2023, ...}]'
+              placeholder='[{"title": "...", "authors": [{"name": "...", "country": "..."}], "year": 2023, "journal": "...", "abstract": "...", "keywords": [...]}]'
               required
             />
             <button
@@ -341,7 +384,7 @@ export default function VisualizationsPage() {
             <div className="border-2 border-gray-200 rounded-lg overflow-hidden mb-4 p-6 bg-gray-50 text-center">
               {wordCloudMutation.data.image_base64 ? (
                 <img 
-                  src={wordCloudMutation.data.image_base64} 
+                  src={wordCloudMutation.data.image_base64.startsWith('data:') ? wordCloudMutation.data.image_base64 : `data:image/png;base64,${wordCloudMutation.data.image_base64}`}
                   alt="Word Cloud" 
                   className="max-w-full mx-auto"
                 />

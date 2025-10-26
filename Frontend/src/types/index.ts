@@ -15,6 +15,7 @@ export interface Author {
   name: string;
   affiliation?: string;
   orcid?: string;
+  country?: string;
 }
 
 // Tipos para descarga de datos
@@ -39,7 +40,7 @@ export interface DownloadJob {
 export interface SimilarityRequest {
   text1: string;
   text2: string;
-  algorithm: 'levenshtein' | 'tfidf' | 'jaccard' | 'ngram' | 'sentence_bert' | 'word2vec';
+  algorithm: 'levenshtein' | 'tfidf_cosine' | 'jaccard' | 'ngram' | 'sentence_bert' | 'bert';
 }
 
 export interface SimilarityResult {
@@ -63,15 +64,17 @@ export interface FrequencyAnalysisRequest {
 }
 
 export interface FrequencyResult {
-  keywords: KeywordFrequency[];
-  total_documents: number;
-  total_terms: number;
+  keyword: string;
+  score: number;
+  method: string;
+  frequency: number;
 }
 
 export interface KeywordFrequency {
-  term: string;
+  keyword: string;
+  score: number;
+  method: string;
   frequency: number;
-  weight?: number;
 }
 
 export interface ConceptAnalysisRequest {

@@ -6,11 +6,11 @@ import type { SimilarityResult } from '../types';
 
 const ALGORITHMS = [
   { id: 'levenshtein', name: 'Levenshtein', description: 'Distancia de edición' },
-  { id: 'tfidf', name: 'TF-IDF', description: 'Similitud coseno con vectorización' },
+  { id: 'tfidf_cosine', name: 'TF-IDF', description: 'Similitud coseno con vectorización' },
   { id: 'jaccard', name: 'Jaccard', description: 'Coeficiente de Jaccard' },
   { id: 'ngram', name: 'N-grams', description: 'Similitud por n-gramas' },
   { id: 'sentence_bert', name: 'Sentence-BERT', description: 'Embeddings de IA' },
-  { id: 'word2vec', name: 'Word2Vec', description: 'Vectores de palabras' },
+  { id: 'bert', name: 'BERT', description: 'Embeddings de IA con BERT' },
 ];
 
 export default function SimilarityPage() {
@@ -25,7 +25,7 @@ export default function SimilarityPage() {
       similarityService.compare({
         text1,
         text2,
-        algorithm: selectedAlgorithm as 'levenshtein' | 'tfidf' | 'jaccard' | 'ngram' | 'sentence_bert' | 'word2vec',
+        algorithm: selectedAlgorithm as 'levenshtein' | 'tfidf_cosine' | 'jaccard' | 'ngram' | 'sentence_bert' | 'bert',
       }),
   });
 
@@ -205,10 +205,10 @@ export default function SimilarityPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-gray-600">
-                      {result.execution_time.toFixed(3)}s
+                      {result.execution_time ? result.execution_time.toFixed(3) : '0.000'}s
                     </span>
                     <span className={`text-2xl font-bold ${getSimilarityColor(result.similarity)}`}>
-                      {(result.similarity * 100).toFixed(1)}%
+                      {result.similarity !== undefined && result.similarity !== null ? (result.similarity * 100).toFixed(1) : '0.0'}%
                     </span>
                   </div>
                 </div>

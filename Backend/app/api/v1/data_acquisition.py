@@ -220,7 +220,19 @@ async def start_download(
         # Convertir sources a lista de strings
         sources = [source.value for source in request.sources]
         
-        # Iniciar descarga en background
+        # Generar job_id único
+        import uuid
+        job_id = f"job_{uuid.uuid4().hex[:12]}"
+        
+        # Registrar job inmediatamente con estado inicial
+        from app.services.data_acquisition.unified_downloader import DownloadJob
+        job = DownloadJob(job_id, request.query, sources, request.max_results_per_source)
+        job.status = "running"
+        from datetime import datetime
+        job.started_at = datetime.now()
+        downloader.active_jobs[job_id] = job
+        
+        # Iniciar descarga en background con el job_id generado
         async def download_task():
             try:
                 await downloader.download(
@@ -229,17 +241,18 @@ async def start_download(
                     max_results_per_source=request.max_results_per_source,
                     start_year=request.start_year,
                     end_year=request.end_year,
-                    export_formats=request.export_formats
+                    export_formats=request.export_formats,
+                    job_id=job_id  # Pasar el job_id generado
                 )
             except Exception as e:
                 logger.error(f"Error en download task: {e}")
+                # Actualizar estado del job a failed
+                if job_id in downloader.active_jobs:
+                    downloader.active_jobs[job_id].status = "failed"
+                    downloader.active_jobs[job_id].errors.append(str(e))
         
         # Agregar tarea a background
         background_tasks.add_task(download_task)
-        
-        # Generar job_id temporal (en producción usar el real del downloader)
-        import uuid
-        job_id = f"job_{uuid.uuid4().hex[:12]}"
         
         return DownloadResponse(
             success=True,

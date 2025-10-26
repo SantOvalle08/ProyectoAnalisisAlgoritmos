@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import DataAcquisitionPage from './pages/DataAcquisitionPage';
@@ -21,21 +22,23 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/data-acquisition" element={<DataAcquisitionPage />} />
-            <Route path="/similarity" element={<SimilarityPage />} />
-            <Route path="/frequency" element={<FrequencyPage />} />
-            <Route path="/clustering" element={<ClusteringPage />} />
-            <Route path="/visualizations" element={<VisualizationsPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Layout>
-      </Router>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/data-acquisition" element={<DataAcquisitionPage />} />
+              <Route path="/similarity" element={<SimilarityPage />} />
+              <Route path="/frequency" element={<FrequencyPage />} />
+              <Route path="/clustering" element={<ClusteringPage />} />
+              <Route path="/visualizations" element={<VisualizationsPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

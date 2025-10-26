@@ -11,10 +11,13 @@ export default function DataAcquisitionPage() {
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
   // Query para listar fuentes disponibles
-  const { data: sources = [] } = useQuery({
+  const { data: sourcesData } = useQuery({
     queryKey: ['sources'],
     queryFn: () => dataAcquisitionService.listSources(),
   });
+
+  // Asegurar que sources siempre sea un array
+  const sources = Array.isArray(sourcesData) ? sourcesData : [];
 
   // Query para obtener estado del trabajo
   const { data: jobStatus, refetch: refetchJobStatus } = useQuery({
@@ -128,24 +131,31 @@ export default function DataAcquisitionPage() {
               Fuentes de Datos
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {sources.map((source) => (
-                <button
-                  key={source}
-                  type="button"
-                  onClick={() => handleSourceToggle(source)}
-                  className={`
-                    px-4 py-3 rounded-lg border-2 transition-all text-left
-                    ${
-                      selectedSources.includes(source)
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                    }
-                  `}
-                >
-                  <Database className="w-5 h-5 mb-1" />
-                  <div className="text-sm font-medium capitalize">{source}</div>
-                </button>
-              ))}
+              {sources.length === 0 ? (
+                <div className="col-span-2 md:col-span-3 text-center py-8 text-gray-500">
+                  <Database className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Cargando fuentes disponibles...</p>
+                </div>
+              ) : (
+                sources.map((source) => (
+                  <button
+                    key={source}
+                    type="button"
+                    onClick={() => handleSourceToggle(source)}
+                    className={`
+                      px-4 py-3 rounded-lg border-2 transition-all text-left
+                      ${
+                        selectedSources.includes(source)
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                      }
+                    `}
+                  >
+                    <Database className="w-5 h-5 mb-1" />
+                    <div className="text-sm font-medium capitalize">{source}</div>
+                  </button>
+                ))
+              )}
             </div>
           </div>
 

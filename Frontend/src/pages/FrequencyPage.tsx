@@ -58,8 +58,8 @@ Reinforcement learning trains agents to make decisions through trial and error i
     if (!keywordsMutation.data) return;
 
     const csv = [
-      ['Keyword', 'Frequency', 'Weight'],
-      ...keywordsMutation.data.keywords.map(k => [k.term, k.frequency.toString(), (k.weight || 0).toFixed(3)]),
+      ['Keyword', 'Frequency', 'Score'],
+      ...keywordsMutation.data.map(k => [k.keyword, k.frequency.toString(), k.score.toFixed(3)]),
     ]
       .map(row => row.join(','))
       .join('\n');
@@ -246,16 +246,16 @@ Reinforcement learning trains agents to make decisions through trial and error i
                 </tr>
               </thead>
               <tbody>
-                {keywordsMutation.data.keywords
-                  .sort((a, b) => b.frequency - a.frequency)
-                  .map((keyword) => {
-                    const maxFreq = Math.max(...keywordsMutation.data!.keywords.map(k => k.frequency));
+                {keywordsMutation.data
+                  ?.sort((a, b) => (b.frequency || 0) - (a.frequency || 0))
+                  ?.map((keyword) => {
+                    const maxFreq = Math.max(...keywordsMutation.data!.map(k => k.frequency || 0));
                     return (
-                      <tr key={keyword.term} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="py-3 px-4 font-mono text-sm">{keyword.term}</td>
+                      <tr key={keyword.keyword} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-3 px-4 font-mono text-sm">{keyword.keyword}</td>
                         <td className="py-3 px-4 text-right font-semibold">{keyword.frequency}</td>
                         <td className="py-3 px-4 text-right text-sm text-gray-600">
-                          {keyword.weight ? keyword.weight.toFixed(3) : 'N/A'}
+                          {keyword.score ? keyword.score.toFixed(3) : 'N/A'}
                         </td>
                         <td className="py-3 px-4">
                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -321,7 +321,7 @@ Reinforcement learning trains agents to make decisions through trial and error i
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(conceptsMutation.data.concept_frequencies).map(([concept, frequency]) => (
+                {conceptsMutation.data?.concept_frequencies && Object.entries(conceptsMutation.data.concept_frequencies).map(([concept, frequency]) => (
                   <tr key={concept} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 px-4 font-mono text-sm">{concept}</td>
                     <td className="py-3 px-4 text-center font-semibold">{frequency}</td>

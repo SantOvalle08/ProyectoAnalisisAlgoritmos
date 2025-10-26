@@ -231,7 +231,9 @@ Unsupervised learning finds hidden patterns in unlabeled data.`
             <div className={`rounded-lg shadow-sm p-6 border-2 ${getSilhouetteBgColor(clusteringMutation.data.silhouette_score)}`}>
               <div className="text-sm text-gray-600 mb-1">Silhouette Score</div>
               <div className={`text-4xl font-bold ${getSilhouetteColor(clusteringMutation.data.silhouette_score)}`}>
-                {clusteringMutation.data.silhouette_score.toFixed(3)}
+                {clusteringMutation.data.silhouette_score !== null && clusteringMutation.data.silhouette_score !== undefined 
+                  ? clusteringMutation.data.silhouette_score.toFixed(3) 
+                  : 'N/A'}
               </div>
               <div className="text-xs text-gray-500 mt-2">
                 {clusteringMutation.data.silhouette_score >= 0.7
