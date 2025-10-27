@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { FileText, Loader2, Download, MapPin, Cloud, CalendarDays } from 'lucide-react';
+import { FileText, Loader2, Download, MapPin, Cloud, CalendarDays, Globe2, BarChart4, Calendar, BookOpen } from 'lucide-react';
 import visualizationService from '../services/visualization';
 import type { Publication } from '../types';
 
@@ -271,26 +271,36 @@ export default function VisualizationsPage() {
                 <button
                   type="button"
                   onClick={() => setMapType('choropleth')}
-                  className={`p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all ${
                     mapType === 'choropleth'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="font-semibold text-sm">Choropleth</div>
-                  <div className="text-xs text-gray-600 mt-1">Mapa geográfico</div>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <Globe2 className={`w-6 h-6 ${mapType === 'choropleth' ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <div>
+                      <div className="font-semibold text-base text-center">Choropleth</div>
+                      <div className="text-sm text-gray-600 text-center">Mapa geográfico</div>
+                    </div>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setMapType('bar')}
-                  className={`p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all ${
                     mapType === 'bar'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="font-semibold text-sm">Barras</div>
-                  <div className="text-xs text-gray-600 mt-1">Gráfico de barras</div>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <BarChart4 className={`w-6 h-6 ${mapType === 'bar' ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <div>
+                      <div className="font-semibold text-base text-center">Barras</div>
+                      <div className="text-sm text-gray-600 text-center">Gráfico de barras</div>
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
@@ -305,26 +315,36 @@ export default function VisualizationsPage() {
                 <button
                   type="button"
                   onClick={() => setTimelineType('simple')}
-                  className={`p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all ${
                     timelineType === 'simple'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="font-semibold text-sm">Simple</div>
-                  <div className="text-xs text-gray-600 mt-1">Por año</div>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <Calendar className={`w-6 h-6 ${timelineType === 'simple' ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <div>
+                      <div className="font-semibold text-base text-center">Simple</div>
+                      <div className="text-sm text-gray-600 text-center">Por año</div>
+                    </div>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setTimelineType('journal')}
-                  className={`p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all ${
                     timelineType === 'journal'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="font-semibold text-sm">Por Journal</div>
-                  <div className="text-xs text-gray-600 mt-1">Agrupado por revista</div>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <BookOpen className={`w-6 h-6 ${timelineType === 'journal' ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <div>
+                      <div className="font-semibold text-base text-center">Por Journal</div>
+                      <div className="text-sm text-gray-600 text-center">Agrupado por revista</div>
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
