@@ -226,7 +226,6 @@ async def generate_wordcloud(request: WordCloudRequest):
 
 @router.post(
     "/heatmap",
-    response_class=HTMLResponse,
     summary="Generar mapa de calor geográfico",
     description="""
     Genera mapa de calor mostrando distribución geográfica de publicaciones
@@ -292,8 +291,13 @@ async def generate_heatmap(request: HeatmapRequest):
             f"Mapa generado: {result['num_countries']} países"
         )
         
-        # Retornar HTML
-        return HTMLResponse(content=result['html'])
+        # Retornar JSON con HTML y metadatos
+        return {
+            "html": result['html'],
+            "country_distribution": result['country_distribution'],
+            "num_publications": result['num_publications'],
+            "num_countries": result['num_countries']
+        }
     
     except ValueError as e:
         logger.error(f"Error de validación: {str(e)}")
@@ -309,7 +313,6 @@ async def generate_heatmap(request: HeatmapRequest):
 
 @router.post(
     "/timeline",
-    response_class=HTMLResponse,
     summary="Generar línea temporal",
     description="""
     Genera gráfico de línea temporal mostrando evolución de publicaciones
@@ -374,8 +377,13 @@ async def generate_timeline(request: TimelineRequest):
             f"Timeline generado: {result['year_range']}"
         )
         
-        # Retornar HTML
-        return HTMLResponse(content=result['html'])
+        # Retornar JSON con HTML y metadatos
+        return {
+            "html": result['html'],
+            "yearly_distribution": result['yearly_distribution'],
+            "num_publications": result['num_publications'],
+            "year_range": result['year_range']
+        }
     
     except ValueError as e:
         logger.error(f"Error de validación: {str(e)}")

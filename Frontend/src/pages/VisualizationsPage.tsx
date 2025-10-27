@@ -89,8 +89,8 @@ export default function VisualizationsPage() {
       {
         title: 'Machine Learning in Healthcare',
         authors: [
-          { name: 'John Doe', affiliation: 'MIT', country: 'United States' },
-          { name: 'Jane Smith', affiliation: 'Stanford', country: 'United States' }
+          { name: 'John Doe', affiliation: 'MIT, United States', country: 'United States' },
+          { name: 'Jane Smith', affiliation: 'Stanford University, United States', country: 'United States' }
         ],
         year: 2023,
         journal: 'Nature Medicine',
@@ -102,7 +102,7 @@ export default function VisualizationsPage() {
       {
         title: 'Deep Learning for Image Recognition',
         authors: [
-          { name: 'Alice Johnson', affiliation: 'Oxford University', country: 'United Kingdom' }
+          { name: 'Alice Johnson', affiliation: 'Oxford University, United Kingdom', country: 'United Kingdom' }
         ],
         year: 2022,
         journal: 'IEEE Transactions on Pattern Analysis',
@@ -114,7 +114,7 @@ export default function VisualizationsPage() {
       {
         title: 'Natural Language Processing with Transformers',
         authors: [
-          { name: 'Carlos García', affiliation: 'Universidad Complutense', country: 'Spain' }
+          { name: 'Carlos García', affiliation: 'Universidad Complutense, Spain', country: 'Spain' }
         ],
         year: 2023,
         journal: 'Computational Linguistics',
@@ -126,7 +126,7 @@ export default function VisualizationsPage() {
       {
         title: 'Reinforcement Learning in Robotics',
         authors: [
-          { name: 'Yuki Tanaka', affiliation: 'University of Tokyo', country: 'Japan' }
+          { name: 'Yuki Tanaka', affiliation: 'University of Tokyo, Japan', country: 'Japan' }
         ],
         year: 2022,
         journal: 'Robotics and Autonomous Systems',
