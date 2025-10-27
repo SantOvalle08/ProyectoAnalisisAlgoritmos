@@ -64,7 +64,10 @@ export default function SimilarityPage() {
     return 'bg-red-100';
   };
 
-  const results = compareAllMode ? compareAllMutation.data : compareMutation.data ? [compareMutation.data] : [];
+  // Convertir el diccionario de compareAll a array
+  const results = compareAllMode 
+    ? (compareAllMutation.data ? Object.values(compareAllMutation.data) : [])
+    : (compareMutation.data ? [compareMutation.data] : []);
   const isLoading = compareAllMode ? compareAllMutation.isPending : compareMutation.isPending;
   const error = compareAllMode ? compareAllMutation.error : compareMutation.error;
 

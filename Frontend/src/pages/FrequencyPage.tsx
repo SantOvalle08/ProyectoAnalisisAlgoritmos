@@ -252,8 +252,8 @@ Reinforcement learning trains agents to make decisions through trial and error i
                     const maxFreq = Math.max(...keywordsMutation.data!.map(k => k.frequency || 0));
                     return (
                       <tr key={keyword.keyword} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="py-3 px-4 font-mono text-sm">{keyword.keyword}</td>
-                        <td className="py-3 px-4 text-right font-semibold">{keyword.frequency}</td>
+                        <td className="py-3 px-4 font-mono text-sm text-gray-900">{keyword.keyword}</td>
+                        <td className="py-3 px-4 text-right font-semibold text-gray-900">{keyword.frequency}</td>
                         <td className="py-3 px-4 text-right text-sm text-gray-600">
                           {keyword.score ? keyword.score.toFixed(3) : 'N/A'}
                         </td>
@@ -278,11 +278,11 @@ Reinforcement learning trains agents to make decisions through trial and error i
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Distribución Visual</h3>
             <div className="space-y-2">
-              {keywordsMutation.data.keywords.slice(0, 10).map((keyword) => {
-                const maxFreq = Math.max(...keywordsMutation.data!.keywords.map(k => k.frequency));
+              {keywordsMutation.data?.slice(0, 10).map((keyword) => {
+                const maxFreq = Math.max(...keywordsMutation.data!.map(k => k.frequency || 0));
                 return (
-                  <div key={keyword.term} className="flex items-center gap-3">
-                    <div className="w-48 text-sm font-mono text-gray-700 truncate">{keyword.term}</div>
+                  <div key={keyword.keyword} className="flex items-center gap-3">
+                    <div className="w-48 text-sm font-mono text-gray-700 truncate">{keyword.keyword}</div>
                     <div className="flex-1 bg-gray-200 rounded-full h-8">
                       <div
                         className="bg-blue-600 h-8 rounded-full flex items-center justify-end pr-3"
@@ -298,12 +298,6 @@ Reinforcement learning trains agents to make decisions through trial and error i
               })}
             </div>
           </div>
-
-          {/* Metadata */}
-          <div className="text-sm text-gray-600 flex gap-6">
-            <span>Total documentos: {keywordsMutation.data.total_documents}</span>
-            <span>Total términos: {keywordsMutation.data.total_terms}</span>
-          </div>
         </div>
       )}
 
@@ -317,43 +311,25 @@ Reinforcement learning trains agents to make decisions through trial and error i
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Concepto</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Frecuencia</th>
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Apariciones</th>
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Frecuencia Doc.</th>
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Frecuencia Rel.</th>
                 </tr>
               </thead>
               <tbody>
-                {conceptsMutation.data?.concept_frequencies && Object.entries(conceptsMutation.data.concept_frequencies).map(([concept, frequency]) => (
+                {Object.entries(conceptsMutation.data).map(([concept, data]) => (
                   <tr key={concept} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 font-mono text-sm">{concept}</td>
-                    <td className="py-3 px-4 text-center font-semibold">{frequency}</td>
+                    <td className="py-3 px-4 font-mono text-sm text-gray-900">{concept}</td>
+                    <td className="py-3 px-4 text-center font-semibold text-gray-900">{data.total_occurrences}</td>
+                    <td className="py-3 px-4 text-center text-sm text-gray-600">{data.document_frequency}</td>
+                    <td className="py-3 px-4 text-center text-sm text-gray-600">
+                      {(data.relative_frequency * 100).toFixed(1)}%
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {/* Métricas globales */}
-          {(conceptsMutation.data.precision !== undefined) && (
-            <div className="mt-6 grid grid-cols-3 gap-4">
-              <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-sm text-gray-600 mb-1">Precision</div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {(conceptsMutation.data.precision * 100).toFixed(1)}%
-                </div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-4 text-center">
-                <div className="text-sm text-gray-600 mb-1">Recall</div>
-                <div className="text-2xl font-bold text-green-600">
-                  {((conceptsMutation.data.recall || 0) * 100).toFixed(1)}%
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-4 text-center">
-                <div className="text-sm text-gray-600 mb-1">F1-Score</div>
-                <div className="text-2xl font-bold text-purple-600">
-                  {((conceptsMutation.data.f1_score || 0) * 100).toFixed(1)}%
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       )}
 

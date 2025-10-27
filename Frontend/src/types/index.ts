@@ -82,27 +82,36 @@ export interface ConceptAnalysisRequest {
   concepts?: string[];
 }
 
-export interface ConceptAnalysisResult {
-  concept_frequencies: Record<string, number>;
-  precision?: number;
-  recall?: number;
-  f1_score?: number;
+export interface ConceptFrequency {
+  concept: string;
+  total_occurrences: number;
+  document_frequency: number;
+  relative_frequency: number;
+  documents_with_concept: number[];
+  example_contexts?: string[] | null;
 }
+
+export type ConceptAnalysisResult = Record<string, ConceptFrequency>;
 
 // Tipos para clustering
 export interface ClusteringRequest {
   abstracts: string[];
   method?: 'ward' | 'average' | 'complete';
-  n_clusters?: number;
+  num_clusters?: number; // Cambiado de n_clusters a num_clusters para coincidir con backend
   labels?: string[];
 }
 
 export interface ClusteringResult {
-  clusters: number[];
+  cluster_labels: number[] | null;
   num_clusters: number;
-  silhouette_score: number;
-  dendrogram_data?: unknown;
-  cluster_labels?: string[];
+  silhouette_score: number | null;
+  dendrogram_base64?: string;
+  cophenetic_correlation?: number;
+  davies_bouldin_score?: number | null;
+  calinski_harabasz_score?: number | null;
+  method: string;
+  num_documents: number;
+  num_features?: number;
 }
 
 // Tipos para visualizaciones

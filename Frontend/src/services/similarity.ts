@@ -9,7 +9,7 @@ export const similarityService = {
   },
 
   // Comparar dos textos con todos los algoritmos
-  async compareAll(text1: string, text2: string): Promise<SimilarityResult[]> {
+  async compareAll(text1: string, text2: string): Promise<Record<string, SimilarityResult>> {
     const response = await api.post('/api/v1/similarity/compare-all', {
       text1,
       text2,
