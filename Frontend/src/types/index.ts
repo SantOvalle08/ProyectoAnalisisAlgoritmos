@@ -28,12 +28,19 @@ export interface DownloadRequest {
 
 export interface DownloadJob {
   job_id: string;
+  query: string;
+  sources: string[];
   status: 'pending' | 'running' | 'completed' | 'failed';
   progress: number;
-  total_publications?: number;
+  current_source?: string | null;
   message?: string;
-  created_at: string;
-  completed_at?: string;
+  total_downloaded: number;
+  total_unique: number;
+  total_duplicates: number;
+  total_publications: number;
+  started_at?: string | null;
+  completed_at?: string | null;
+  errors: string[];
 }
 
 // Tipos para similitud

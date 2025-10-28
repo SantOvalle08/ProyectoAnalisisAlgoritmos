@@ -130,9 +130,11 @@ class JobStatusResponse(BaseModel):
     status: str
     progress: float
     current_source: Optional[str]
+    message: Optional[str] = Field(default=None, description="Mensaje descriptivo del estado actual")
     total_downloaded: int
     total_unique: int
     total_duplicates: int
+    total_publications: int = Field(default=0, description="Total de publicaciones únicas disponibles")
     started_at: Optional[str]
     completed_at: Optional[str]
     errors: List[str]
@@ -566,32 +568,32 @@ async def list_available_sources():
                 "id": "acm",
                 "name": "ACM Digital Library",
                 "description": "Publicaciones de ACM (Association for Computing Machinery)",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Ciencias de la Computación"
             },
             {
                 "id": "sage",
                 "name": "SAGE Publications",
                 "description": "Editorial académica con amplia cobertura",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Ciencias Sociales, Humanidades"
             },
             {
                 "id": "sciencedirect",
                 "name": "ScienceDirect",
                 "description": "Base de datos de Elsevier",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Multidisciplinario (STM)"
             }
         ],
         "total_sources": 4,
-        "available_sources": 1
+        "available_sources": 4  # Actualizado a 4
     }
 
 

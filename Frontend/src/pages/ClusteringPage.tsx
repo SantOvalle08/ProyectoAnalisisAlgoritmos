@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Network, Loader2, Download, Info } from 'lucide-react';
 import clusteringService from '../services/clustering';
+import FileUploader from '../components/FileUploader';
+import type { Publication } from '../types';
 
 const METHODS = [
   { id: 'ward', name: 'Ward', description: 'Mínima varianza' },
@@ -15,6 +17,21 @@ export default function ClusteringPage() {
   const [nClusters, setNClusters] = useState<number>(3); // Valor por defecto 3
   const [autoDetect, setAutoDetect] = useState(true);
   const [labels, setLabels] = useState('');
+
+  // Función para cargar publicaciones desde archivo
+  const handlePublicationsLoaded = (publications: Publication[]) => {
+    const abstractsText = publications
+      .map(pub => pub.abstract || '')
+      .filter(abs => abs.trim())
+      .join('\n');
+    
+    const labelsText = publications
+      .map(pub => pub.title || 'Sin título')
+      .join('\n');
+    
+    setAbstracts(abstractsText);
+    setLabels(labelsText);
+  };
 
   const clusteringMutation = useMutation({
     mutationFn: () => {
@@ -149,6 +166,18 @@ Black holes are regions of spacetime where gravity is so strong that nothing can
       {/* Formulario */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* File Uploader */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              📁 Cargar desde archivo
+            </h3>
+            <FileUploader
+              onPublicationsLoaded={handlePublicationsLoaded}
+              buttonText="Cargar publicaciones"
+              buttonClassName="bg-purple-600 text-white hover:bg-purple-700"
+            />
+          </div>
+
           {/* Abstracts */}
           <div>
             <label htmlFor="abstracts" className="block text-sm font-medium text-gray-700 mb-2">

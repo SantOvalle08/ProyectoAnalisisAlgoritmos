@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { GitCompare, Loader2, AlertCircle } from 'lucide-react';
 import similarityService from '../services/similarity';
-import type { SimilarityResult } from '../types';
+import FileUploader from '../components/FileUploader';
+import type { SimilarityResult, Publication } from '../types';
 
 const ALGORITHMS = [
   { id: 'levenshtein', name: 'Levenshtein', description: 'Distancia de edición' },
@@ -18,6 +19,19 @@ export default function SimilarityPage() {
   const [text2, setText2] = useState('');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('levenshtein');
   const [compareAllMode, setCompareAllMode] = useState(false);
+
+  // Funciones para cargar publicaciones desde archivos separados
+  const handlePublicationsLoadedText1 = (publications: Publication[]) => {
+    if (publications.length > 0) {
+      setText1(publications[0].abstract || publications[0].title || '');
+    }
+  };
+
+  const handlePublicationsLoadedText2 = (publications: Publication[]) => {
+    if (publications.length > 0) {
+      setText2(publications[0].abstract || publications[0].title || '');
+    }
+  };
 
   // Mutation para comparar con un algoritmo
   const compareMutation = useMutation({
@@ -85,6 +99,45 @@ export default function SimilarityPage() {
       {/* Formulario */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* File Uploaders */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">
+              📁 Cargar desde archivos
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* FileUploader para Texto 1 */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-2">
+                  Cargar archivo para Texto 1
+                </label>
+                <FileUploader
+                  onPublicationsLoaded={handlePublicationsLoadedText1}
+                  buttonText="Cargar para Texto 1"
+                  buttonClassName="bg-blue-600 text-white hover:bg-blue-700"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  El primer abstract se cargará en Texto 1
+                </p>
+              </div>
+
+              {/* FileUploader para Texto 2 */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-2">
+                  Cargar archivo para Texto 2
+                </label>
+                <FileUploader
+                  onPublicationsLoaded={handlePublicationsLoadedText2}
+                  buttonText="Cargar para Texto 2"
+                  buttonClassName="bg-purple-600 text-white hover:bg-purple-700"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  El primer abstract se cargará en Texto 2
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Texto 1 */}
           <div>
             <label htmlFor="text1" className="block text-sm font-medium text-gray-700 mb-2">

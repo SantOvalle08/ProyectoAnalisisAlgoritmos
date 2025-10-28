@@ -33,12 +33,14 @@ gensim==4.3.3
 python-Levenshtein==0.26.0
 
 # ===== SCIENTIFIC DATA PROCESSING =====
-# Bibliographic Data
+# Bibliographic Data & File Parsing
 pybtex==0.24.0
 rispy==0.7.1
+bibtexparser==1.4.1
 crossref-commons==0.10.1
 scholarly==1.7.11
 habanero==1.2.6
+chardet==5.2.0
 
 # Web Scraping
 beautifulsoup4==4.12.3
@@ -51,6 +53,7 @@ aiohttp==3.10.10
 matplotlib==3.9.2
 seaborn==0.13.2
 plotly==5.24.1
+kaleido==0.2.1
 
 # ===== CLUSTERING & SIMILARITY =====
 # (Already included in scikit-learn, but specific libraries)
@@ -71,9 +74,13 @@ httpx==0.27.2
 # ===== SECURITY & AUTHENTICATION =====
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.9
 
 # ===== FILE PROCESSING & EXPORT =====
 PyPDF2==3.0.1
 reportlab==4.2.5
 openpyxl==3.1.5
+aiofiles==23.2.1
+
+# ===== WORDCLOUD GENERATION =====
+wordcloud==1.9.3
+Pillow==10.4.0

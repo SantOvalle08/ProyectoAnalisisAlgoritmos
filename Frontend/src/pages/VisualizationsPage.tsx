@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { FileText, Loader2, Download, MapPin, Cloud, CalendarDays, Globe2, BarChart4, Calendar, BookOpen } from 'lucide-react';
 import visualizationService from '../services/visualization';
+import FileUploader from '../components/FileUploader';
 import type { Publication } from '../types';
 
 type VisualizationType = 'wordcloud' | 'heatmap' | 'timeline';
@@ -18,6 +19,12 @@ export default function VisualizationsPage() {
   
   // Timeline config
   const [timelineType, setTimelineType] = useState<'simple' | 'journal'>('simple');
+
+  // Función para cargar publicaciones desde archivo
+  const handlePublicationsLoaded = (publications: Publication[]) => {
+    const json = JSON.stringify(publications, null, 2);
+    setPublicationsJson(json);
+  };
 
   const wordCloudMutation = useMutation({
     mutationFn: () => {
@@ -221,6 +228,18 @@ export default function VisualizationsPage() {
       {/* Formulario */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* File Uploader */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              📁 Cargar desde archivo
+            </h3>
+            <FileUploader
+              onPublicationsLoaded={handlePublicationsLoaded}
+              buttonText="Cargar publicaciones"
+              buttonClassName="bg-purple-600 text-white hover:bg-purple-700"
+            />
+          </div>
+
           {/* Input JSON */}
           <div>
             <label htmlFor="publications" className="block text-sm font-medium text-gray-700 mb-2">

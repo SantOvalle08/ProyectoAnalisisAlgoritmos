@@ -20,26 +20,37 @@ export default function DataAcquisitionPage() {
   const sources = Array.isArray(sourcesData) ? sourcesData : [];
 
   // Query para obtener estado del trabajo
-  const { data: jobStatus, refetch: refetchJobStatus } = useQuery({
+  const { data: jobStatus } = useQuery({
     queryKey: ['jobStatus', currentJobId],
-    queryFn: () => dataAcquisitionService.getJobStatus(currentJobId!),
-    enabled: !!currentJobId,
+    queryFn: () => {
+      if (!currentJobId) {
+        return Promise.reject('No job ID');
+      }
+      return dataAcquisitionService.getJobStatus(currentJobId);
+    },
+    enabled: !!currentJobId && currentJobId !== null && currentJobId !== 'null',
     refetchInterval: (query) => {
-      // Dejar de hacer polling si el trabajo terminó
+      // Dejar de hacer polling si el trabajo terminó o no hay job_id
       const data = query.state.data;
-      if (!data || data.status === 'completed' || data.status === 'failed') {
+      if (!currentJobId || !data || data.status === 'completed' || data.status === 'failed') {
         return false;
       }
       return 2000; // Polling cada 2 segundos
     },
+    retry: 1,
   });
 
   // Mutation para iniciar descarga
   const downloadMutation = useMutation({
     mutationFn: (request: DownloadRequest) => dataAcquisitionService.startDownload(request),
     onSuccess: (data) => {
-      setCurrentJobId(data.job_id);
-      refetchJobStatus();
+      console.log('Download started:', data);
+      if (data && data.job_id) {
+        setCurrentJobId(data.job_id);
+      }
+    },
+    onError: (error) => {
+      console.error('Download error:', error);
     },
   });
 
@@ -197,68 +208,112 @@ export default function DataAcquisitionPage() {
       </div>
 
       {/* Estado del trabajo */}
-      {jobStatus && (
+      {(currentJobId || downloadMutation.isPending) && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900">Estado de la Descarga</h2>
             {getStatusIcon()}
           </div>
 
-          <div className="space-y-4">
-            {/* Información del trabajo */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Job ID</p>
-                <p className="font-mono text-sm font-medium">{jobStatus.job_id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Estado</p>
-                <p className="font-semibold capitalize">{jobStatus.status}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Progreso</p>
-                <p className="font-semibold">{jobStatus.progress}%</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Publicaciones</p>
-                <p className="font-semibold">{jobStatus.total_publications || 0}</p>
-              </div>
+          {!jobStatus && downloadMutation.isPending && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-8 h-8 text-blue-500 animate-spin mr-3" />
+              <span className="text-gray-600">Iniciando descarga...</span>
             </div>
+          )}
 
-            {/* Barra de progreso */}
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div
-                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
-                style={{ width: `${jobStatus.progress}%` }}
-              />
-            </div>
-
-            {/* Mensaje */}
-            {jobStatus.message && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-800">{jobStatus.message}</p>
-              </div>
-            )}
-
-            {/* Botones de descarga */}
-            {jobStatus.status === 'completed' && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Descargar Resultados</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {['json', 'bibtex', 'ris', 'csv'].map((format) => (
-                    <button
-                      key={format}
-                      onClick={() => handleDownloadFile(format)}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-                    >
-                      <FileDown className="w-4 h-4" />
-                      <span className="text-sm font-medium uppercase">{format}</span>
-                    </button>
-                  ))}
+          {jobStatus && (
+            <div className="space-y-4">
+              {/* Información del trabajo */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 uppercase mb-1">Job ID</p>
+                  <p className="font-mono text-sm font-semibold text-gray-900 break-all">{jobStatus.job_id}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 uppercase mb-1">Estado</p>
+                  <p className="text-sm font-bold text-gray-900 capitalize">{jobStatus.status}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 uppercase mb-1">Progreso</p>
+                  <p className="text-sm font-bold text-gray-900">{jobStatus.progress}%</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 uppercase mb-1">Publicaciones</p>
+                  <p className="text-sm font-bold text-gray-900">{jobStatus.total_publications || 0}</p>
                 </div>
               </div>
-            )}
-          </div>
+
+              {/* Barra de progreso */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">Progreso de descarga</span>
+                  <span className="text-sm font-bold text-blue-600">{Math.round(jobStatus.progress)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm"
+                    style={{ width: `${jobStatus.progress}%` }}
+                  />
+                </div>
+                {jobStatus.current_source && (
+                  <p className="text-xs text-gray-600 italic">
+                    Procesando: <span className="font-semibold text-gray-900">{jobStatus.current_source}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Mensaje */}
+              {jobStatus.message && (
+                <div className="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4">
+                  <p className="text-sm text-blue-900 font-medium">{jobStatus.message}</p>
+                </div>
+              )}
+
+              {/* Estadísticas detalladas (cuando está completado) */}
+              {jobStatus.status === 'completed' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-green-900 mb-3 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Descarga Completada
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p className="text-xs text-green-700 uppercase mb-1">Total Descargado</p>
+                      <p className="text-2xl font-bold text-green-900">{jobStatus.total_downloaded}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-green-700 uppercase mb-1">Publicaciones Únicas</p>
+                      <p className="text-2xl font-bold text-green-900">{jobStatus.total_unique}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-green-700 uppercase mb-1">Duplicados Eliminados</p>
+                      <p className="text-2xl font-bold text-orange-600">{jobStatus.total_duplicates}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Botones de descarga */}
+              {jobStatus.status === 'completed' && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Descargar Resultados</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {['json', 'bibtex', 'ris', 'csv'].map((format) => (
+                      <button
+                        key={format}
+                        onClick={() => handleDownloadFile(format)}
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                      >
+                        <FileDown className="w-4 h-4" />
+                        <span className="text-sm font-medium uppercase">{format}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

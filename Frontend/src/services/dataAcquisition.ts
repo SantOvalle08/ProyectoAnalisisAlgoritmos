@@ -50,10 +50,12 @@ export const dataAcquisitionService = {
   // Listar fuentes disponibles
   async listSources(): Promise<string[]> {
     const response = await api.get('/api/v1/data/sources');
-    // El backend retorna { sources: [{id, name, ...}, ...] }
-    // Extraer solo los IDs
+    // El backend retorna { sources: [{id, name, available, ...}, ...] }
+    // Extraer solo los IDs de fuentes disponibles
     if (response.data?.sources && Array.isArray(response.data.sources)) {
-      return response.data.sources.map((source: { id: string }) => source.id);
+      return response.data.sources
+        .filter((source: { available: boolean }) => source.available)
+        .map((source: { id: string }) => source.id);
     }
     return [];
   },

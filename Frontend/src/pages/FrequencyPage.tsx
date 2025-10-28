@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { BarChart3, Loader2, Download } from 'lucide-react';
 import frequencyService from '../services/frequency';
+import FileUploader from '../components/FileUploader';
+import type { Publication } from '../types';
 
 export default function FrequencyPage() {
   const [abstracts, setAbstracts] = useState('');
@@ -9,6 +11,16 @@ export default function FrequencyPage() {
   const [useTfidf, setUseTfidf] = useState(true);
   const [concepts, setConcepts] = useState('');
   const [mode, setMode] = useState<'keywords' | 'concepts'>('keywords');
+
+  // Función para cargar publicaciones desde archivo
+  const handlePublicationsLoaded = (publications: Publication[]) => {
+    const abstractsText = publications
+      .map(pub => pub.abstract || '')
+      .filter(abs => abs.trim())
+      .join('\n');
+    
+    setAbstracts(abstractsText);
+  };
 
   // Mutation para extraer keywords
   const keywordsMutation = useMutation({
@@ -116,6 +128,18 @@ Reinforcement learning trains agents to make decisions through trial and error i
       {/* Formulario */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* File Uploader */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              📁 Cargar desde archivo
+            </h3>
+            <FileUploader
+              onPublicationsLoaded={handlePublicationsLoaded}
+              buttonText="Cargar publicaciones"
+              buttonClassName="bg-purple-600 text-white hover:bg-purple-700"
+            />
+          </div>
+
           {/* Abstracts */}
           <div>
             <label htmlFor="abstracts" className="block text-sm font-medium text-gray-700 mb-2">
