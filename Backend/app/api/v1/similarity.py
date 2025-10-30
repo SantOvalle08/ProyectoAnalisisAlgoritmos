@@ -299,7 +299,8 @@ async def compare_texts(request: CompareRequest):
     try:
         logger.info(f"Comparing texts with algorithm: {request.algorithm}")
         
-        start_time = time.time()
+        # Usar perf_counter para mayor precisión en tiempos cortos
+        start_time = time.perf_counter()
         
         # Instanciar algoritmo
         algo = get_algorithm_instance(
@@ -314,16 +315,19 @@ async def compare_texts(request: CompareRequest):
         # Calcular similitud
         similarity = algo.calculate_similarity(request.text1, request.text2)
         
-        execution_time = time.time() - start_time
+        execution_time = time.perf_counter() - start_time
         
-        logger.info(f"Similarity: {similarity:.4f}, Time: {execution_time:.2f}s")
+        # Redondear a 6 decimales para capturar tiempos muy pequeños
+        execution_time_rounded = round(execution_time, 6)
+        
+        logger.info(f"Similarity: {similarity:.4f}, Time: {execution_time:.6f}s")
         
         return SimilarityResult(
             algorithm=algo.name,
             algorithm_type=algo.algorithm_type.value,
             similarity=similarity,
             similarity_percentage=f"{similarity * 100:.2f}%",
-            execution_time_seconds=round(execution_time, 4)
+            execution_time_seconds=execution_time_rounded
         )
     
     except ValueError as e:
@@ -398,19 +402,23 @@ async def compare_all_algorithms(request: CompareRequest):
         
         for algorithm in algorithms:
             try:
-                start_time = time.time()
+                # Usar perf_counter para mayor precisión
+                start_time = time.perf_counter()
                 
                 algo = get_algorithm_instance(algorithm)
                 similarity = algo.calculate_similarity(text1, text2)
                 
-                execution_time = time.time() - start_time
+                execution_time = time.perf_counter() - start_time
+                
+                # Redondear a 6 decimales para capturar tiempos muy pequeños
+                execution_time_rounded = round(execution_time, 6)
                 
                 results[algorithm.value] = SimilarityResult(
                     algorithm=algo.name,
                     algorithm_type=algo.algorithm_type.value,
                     similarity=similarity,
                     similarity_percentage=f"{similarity * 100:.2f}%",
-                    execution_time_seconds=round(execution_time, 4)
+                    execution_time_seconds=execution_time_rounded
                 )
                 
             except Exception as e:
@@ -531,21 +539,25 @@ async def batch_compare(request: BatchCompareRequest):
         
         for i, pair in enumerate(request.pairs):
             try:
-                start_time = time.time()
+                # Usar perf_counter para mayor precisión
+                start_time = time.perf_counter()
                 
                 similarity = algo.calculate_similarity(
                     pair['text1'],
                     pair['text2']
                 )
                 
-                execution_time = time.time() - start_time
+                execution_time = time.perf_counter() - start_time
+                
+                # Redondear a 6 decimales
+                execution_time_rounded = round(execution_time, 6)
                 
                 results.append(SimilarityResult(
                     algorithm=algo.name,
                     algorithm_type=algo.algorithm_type.value,
                     similarity=similarity,
                     similarity_percentage=f"{similarity * 100:.2f}%",
-                    execution_time_seconds=round(execution_time, 4)
+                    execution_time_seconds=execution_time_rounded
                 ))
                 
             except Exception as e:

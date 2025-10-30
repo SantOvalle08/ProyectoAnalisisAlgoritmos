@@ -260,8 +260,12 @@ export default function SimilarityPage() {
                     {result.algorithm.replace('_', '-')}
                   </h3>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600">
-                      {result.execution_time ? result.execution_time.toFixed(3) : '0.000'}s
+                    <span className="text-sm text-gray-600 font-mono">
+                      {result.execution_time_seconds 
+                        ? result.execution_time_seconds < 0.001 
+                          ? `${(result.execution_time_seconds * 1000).toFixed(3)}ms`
+                          : `${result.execution_time_seconds.toFixed(4)}s`
+                        : '0.000s'}
                     </span>
                     <span className={`text-2xl font-bold ${getSimilarityColor(result.similarity)}`}>
                       {result.similarity !== undefined && result.similarity !== null ? (result.similarity * 100).toFixed(1) : '0.0'}%

@@ -52,9 +52,11 @@ export interface SimilarityRequest {
 
 export interface SimilarityResult {
   algorithm: string;
+  algorithm_type: string;
   similarity: number;
+  similarity_percentage: string;
   distance?: number;
-  execution_time: number;
+  execution_time_seconds: number;
   details?: Record<string, unknown>;
 }
 
