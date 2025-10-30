@@ -20,6 +20,9 @@ from pathlib import Path
 
 from .base_scraper import BaseScraper, ExportFormat
 from .crossref_scraper import CrossRefScraper
+from .acm_scraper import ACMScraper
+from .sage_scraper import SAGEScraper
+from .sciencedirect_scraper import ScienceDirectScraper
 from .deduplicator import Deduplicator, DuplicateReport
 from app.models.publication import Publication
 
@@ -126,9 +129,9 @@ class UnifiedDownloader:
         # Scrapers disponibles
         self.available_scrapers = {
             'crossref': CrossRefScraper,
-            # 'acm': ACMScraper,  # A implementar
-            # 'sage': SAGEScraper,  # A implementar
-            # 'sciencedirect': ScienceDirectScraper  # A implementar
+            'acm': ACMScraper,
+            'sage': SAGEScraper,
+            'sciencedirect': ScienceDirectScraper
         }
         
         # Jobs en ejecución
