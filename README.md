@@ -448,6 +448,7 @@ Este proyecto ha sido desarrollado para fines académicos en el marco del curso 
 **Autores:**
 - Santiago Ovalle Cortés
 - Juan Sebastián Noreña
+- Santiago Londoño Gaviria
 
 **Supervisor Académico:** Carlos Andres Flores Villaraga 
 
