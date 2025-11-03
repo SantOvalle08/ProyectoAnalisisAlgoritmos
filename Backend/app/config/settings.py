@@ -64,6 +64,20 @@ class Settings(BaseSettings):
     crossref_api_email: Optional[str] = Field(default=None, description="Email para API de CrossRef")
     elsevier_api_key: Optional[str] = Field(default=None, description="API Key de Elsevier")
     
+    # Credenciales para scrapers con autenticación
+    acm_username: Optional[str] = Field(default=None, description="Usuario de ACM Digital Library")
+    acm_password: Optional[str] = Field(default=None, description="Contraseña de ACM Digital Library")
+    sage_username: Optional[str] = Field(default=None, description="Usuario de SAGE Publications")
+    sage_password: Optional[str] = Field(default=None, description="Contraseña de SAGE Publications")
+    ieee_username: Optional[str] = Field(default=None, description="Usuario de IEEE Xplore")
+    ieee_password: Optional[str] = Field(default=None, description="Contraseña de IEEE Xplore")
+    
+    # Configuración de Selenium/ChromeDriver
+    selenium_headless: bool = Field(default=True, description="Ejecutar navegador en modo headless")
+    selenium_implicit_wait: int = Field(default=10, description="Tiempo de espera implícito en segundos")
+    selenium_page_load_timeout: int = Field(default=30, description="Timeout de carga de página en segundos")
+    chromedriver_path: Optional[str] = Field(default=None, description="Ruta a ChromeDriver (None = auto-install)")
+    
     # Configuración de modelos ML/NLP
     model_cache_dir: str = Field(default="./models", description="Directorio de caché de modelos")
     default_sentence_model: str = Field(
@@ -98,6 +112,13 @@ class Settings(BaseSettings):
 
 # Crear instancia global de configuración
 settings = Settings()
+
+def get_settings() -> Settings:
+    """
+    Obtiene la instancia de configuración.
+    Útil para inyección de dependencias en FastAPI.
+    """
+    return settings
 
 # Conceptos predefinidos para análisis de frecuencias
 GENERATIVE_AI_CONCEPTS = [

@@ -49,6 +49,12 @@ scrapy==2.11.2
 requests==2.32.3
 aiohttp==3.13.2
 
+# Browser Automation (for bypassing Cloudflare/anti-bot protection)
+setuptools>=65.0.0  # Required for undetected-chromedriver in Python 3.12+
+selenium==4.26.1
+webdriver-manager==4.0.2
+undetected-chromedriver==3.5.5
+
 # ===== DATA VISUALIZATION =====
 matplotlib==3.9.2
 seaborn==0.13.2
