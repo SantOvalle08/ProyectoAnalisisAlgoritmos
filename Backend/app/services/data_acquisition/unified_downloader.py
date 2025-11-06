@@ -20,6 +20,9 @@ from pathlib import Path
 
 from .base_scraper import BaseScraper, ExportFormat
 from .crossref_scraper import CrossRefScraper
+from .acm_scraper import ACMScraper
+from .sage_scraper import SAGEScraper
+from .sciencedirect_scraper import ScienceDirectScraper
 from .deduplicator import Deduplicator, DuplicateReport
 from app.models.publication import Publication
 
@@ -48,6 +51,7 @@ class DownloadJob:
         self.status = "pending"
         self.progress = 0.0
         self.current_source: Optional[str] = None
+        self.message = "Iniciando descarga..."
         
         self.publications_by_source: Dict[str, List[Publication]] = {}
         self.unified_publications: List[Publication] = []
@@ -71,9 +75,11 @@ class DownloadJob:
             'status': self.status,
             'progress': self.progress,
             'current_source': self.current_source,
+            'message': self.message,
             'total_downloaded': self.total_downloaded,
             'total_unique': self.total_unique,
             'total_duplicates': self.total_duplicates,
+            'total_publications': self.total_unique,  # Alias para total_unique
             'started_at': self.started_at.isoformat() if self.started_at else None,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'errors': self.errors
@@ -123,9 +129,9 @@ class UnifiedDownloader:
         # Scrapers disponibles
         self.available_scrapers = {
             'crossref': CrossRefScraper,
-            # 'acm': ACMScraper,  # A implementar
-            # 'sage': SAGEScraper,  # A implementar
-            # 'sciencedirect': ScienceDirectScraper  # A implementar
+            'acm': ACMScraper,
+            'sage': SAGEScraper,
+            'sciencedirect': ScienceDirectScraper
         }
         
         # Jobs en ejecución
@@ -145,7 +151,8 @@ class UnifiedDownloader:
         max_results_per_source: int = 100,
         start_year: Optional[int] = None,
         end_year: Optional[int] = None,
-        export_formats: Optional[List[ExportFormat]] = None
+        export_formats: Optional[List[ExportFormat]] = None,
+        job_id: Optional[str] = None
     ) -> DownloadJob:
         """
         Descarga publicaciones desde múltiples fuentes de manera unificada.
@@ -157,17 +164,26 @@ class UnifiedDownloader:
             start_year: Año de inicio para filtrar
             end_year: Año final para filtrar
             export_formats: Formatos de exportación adicionales
+            job_id: ID del job (opcional, se genera automáticamente si no se proporciona)
         
         Returns:
             DownloadJob con resultados y estadísticas
         """
         # Crear job
-        job_id = self._generate_job_id()
-        job = DownloadJob(job_id, query, sources, max_results_per_source)
-        job.started_at = datetime.now()
-        job.status = "running"
+        if job_id is None:
+            job_id = self._generate_job_id()
         
-        self.active_jobs[job_id] = job
+        # Si el job ya existe (fue registrado externamente), actualizarlo
+        # Si no existe, crear uno nuevo
+        if job_id in self.active_jobs:
+            job = self.active_jobs[job_id]
+            logger.info(f"Reanudando job existente {job_id}")
+        else:
+            job = DownloadJob(job_id, query, sources, max_results_per_source)
+            job.started_at = datetime.now()
+            job.status = "running"
+            self.active_jobs[job_id] = job
+            logger.info(f"Creando nuevo job {job_id}")
         
         logger.info(f"Iniciando job {job_id}: query='{query}', sources={sources}")
         
@@ -188,20 +204,49 @@ class UnifiedDownloader:
             scrapers: Dict[str, BaseScraper] = {}
             for source in valid_sources:
                 scraper_class = self.available_scrapers[source]
-                scrapers[source] = scraper_class(rate_limit=self.rate_limit)
+                
+                # Configurar scrapers con credenciales específicas
+                if source == 'sciencedirect':
+                    from app.config.settings import settings
+                    scrapers[source] = scraper_class(
+                        api_key=settings.elsevier_api_key,
+                        rate_limit=self.rate_limit
+                    )
+                elif source == 'sage':
+                    from app.config.settings import settings
+                    scrapers[source] = scraper_class(
+                        institutional_url=settings.sage_institutional_url,
+                        rate_limit=self.rate_limit
+                    )
+                else:
+                    scrapers[source] = scraper_class(rate_limit=self.rate_limit)
+                
                 logger.info(f"Scraper inicializado: {source}")
             
-            # Descargar de cada fuente
-            download_tasks = []
-            for source, scraper in scrapers.items():
-                task = self._download_from_source(
+            # Calcular progreso por etapa
+            total_steps = len(valid_sources) + 2  # Descargas + Unificación + Exportación
+            progress_per_step = 100.0 / total_steps
+            
+            # Descargar de cada fuente (con actualización de progreso)
+            for i, (source, scraper) in enumerate(scrapers.items(), 1):
+                job.current_source = source
+                job.progress = (i - 1) * progress_per_step
+                job.message = f"Descargando de {source}..."
+                logger.info(f"Progreso: {job.progress:.1f}% - Descargando de {source}")
+                
+                await self._download_from_source(
                     job, source, scraper, query,
                     max_results_per_source, start_year, end_year
                 )
-                download_tasks.append(task)
+                
+                # Actualizar progreso después de cada fuente
+                job.progress = i * progress_per_step
+                job.message = f"Completada descarga de {source}: {len(job.publications_by_source.get(source, []))} publicaciones"
+                logger.info(f"Progreso: {job.progress:.1f}% - {source} completado")
             
-            # Ejecutar descargas en paralelo
-            await asyncio.gather(*download_tasks, return_exceptions=True)
+                # Actualizar progreso después de cada fuente
+                job.progress = i * progress_per_step
+                logger.info(f"Progreso: {job.progress:.1f}% - {source} completado")
             
             # Cerrar sesiones de scrapers
             for scraper in scrapers.values():
@@ -209,9 +254,19 @@ class UnifiedDownloader:
                     await scraper.close()
             
             # Unificar y deduplicar
+            job.progress = len(valid_sources) * progress_per_step
+            job.current_source = "Unificando y deduplicando"
+            job.message = "Unificando resultados y eliminando duplicados..."
+            logger.info(f"Progreso: {job.progress:.1f}% - Iniciando unificación")
+            
             await self._unify_and_deduplicate(job)
             
             # Exportar resultados
+            job.progress = (len(valid_sources) + 1) * progress_per_step
+            job.current_source = "Exportando resultados"
+            job.message = "Exportando resultados a múltiples formatos..."
+            logger.info(f"Progreso: {job.progress:.1f}% - Exportando resultados")
+            
             if export_formats:
                 await self._export_results(job, export_formats)
             else:
@@ -222,6 +277,8 @@ class UnifiedDownloader:
                 )
             
             job.status = "completed"
+            job.progress = 100.0
+            job.message = f"Descarga completada: {job.total_unique} publicaciones únicas de {job.total_downloaded} descargadas"
             job.completed_at = datetime.now()
             
             duration = (job.completed_at - job.started_at).total_seconds()

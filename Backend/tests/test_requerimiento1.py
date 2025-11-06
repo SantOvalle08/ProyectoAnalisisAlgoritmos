@@ -15,6 +15,7 @@ Course: Análisis de Algoritmos (2025-2), Universidad del Quindío
 import asyncio
 import sys
 from pathlib import Path
+import pytest
 
 # Agregar el directorio Backend al path
 backend_path = Path(__file__).parent
@@ -37,6 +38,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.asyncio
 async def test_requerimiento_1():
     """
     Prueba completa del Requerimiento 1.
@@ -182,6 +184,7 @@ async def test_requerimiento_1():
         return False
 
 
+@pytest.mark.asyncio
 async def test_deduplicator():
     """Prueba específica del sistema de deduplicación."""
     from app.services.data_acquisition.deduplicator import Deduplicator

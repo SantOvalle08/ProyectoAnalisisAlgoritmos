@@ -49,6 +49,7 @@ class SAGEScraper(BaseScraper):
     def __init__(
         self,
         api_key: Optional[str] = None,
+        institutional_url: Optional[str] = None,
         rate_limit: float = 0.5,  # 1 petición cada 2 segundos
         timeout: int = 30
     ):
@@ -57,18 +58,25 @@ class SAGEScraper(BaseScraper):
         
         Args:
             api_key: No utilizado actualmente
+            institutional_url: URL del proxy institucional (ej: https://search-sagepub-com.crai.referencistas.com/)
             rate_limit: Peticiones por segundo
             timeout: Timeout de peticiones en segundos
         """
+        # Usar URL institucional si está disponible
+        base_url = institutional_url if institutional_url else "https://journals.sagepub.com"
+        
         super().__init__(
             source_name="sage",
-            base_url="https://journals.sagepub.com",
+            base_url=base_url,
             api_key=api_key,
             rate_limit=rate_limit,
             timeout=timeout
         )
         
         self.session: Optional[aiohttp.ClientSession] = None
+        
+        if institutional_url:
+            logger.info(f"SAGE configurado con acceso institucional: {institutional_url}")
     
     async def _get_session(self) -> aiohttp.ClientSession:
         """Obtiene o crea una sesión aiohttp con headers apropiados."""

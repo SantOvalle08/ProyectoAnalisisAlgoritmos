@@ -51,7 +51,7 @@ def test_levenshtein():
     print(f"   - Sustituciones: {analysis['operations']['counts']['substitute']}")
     print(f"   - Coincidencias: {analysis['operations']['counts']['match']}")
     
-    return True
+    
 
 
 def test_tfidf_cosine():
@@ -97,7 +97,7 @@ def test_tfidf_cosine():
     for term in analysis['vectorization']['top_terms_text2'][:5]:
         print(f"      - '{term['term']}': {term['tfidf_weight']:.4f}")
     
-    return True
+    
 
 
 def test_jaccard():
@@ -128,7 +128,7 @@ def test_jaccard():
     print(f"   - Tokens comunes: {analysis['set_operations']['intersection_size']}")
     print(f"   - Tokens únicos totales: {analysis['set_operations']['union_size']}")
     
-    return True
+    
 
 
 def test_ngrams():
@@ -160,7 +160,7 @@ def test_ngrams():
     print(f"   - Total 3-gramas Texto 2: {analysis['ngrams']['total_ngrams_text2']}")
     print(f"   - 3-gramas comunes: {analysis['set_operations']['intersection_size']}")
     
-    return True
+    
 
 
 def main():
@@ -228,3 +228,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+

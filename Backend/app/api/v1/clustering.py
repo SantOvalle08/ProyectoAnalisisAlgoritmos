@@ -12,7 +12,7 @@ University: Universidad del Quindío - Análisis de Algoritmos
 """
 
 from fastapi import APIRouter, HTTPException, Body
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional
 from enum import Enum
 import logging
@@ -38,8 +38,8 @@ class ClusteringRequest(BaseModel):
     """Request para clustering jerárquico."""
     abstracts: List[str] = Field(
         ...,
-        min_items=2,
-        max_items=1000,
+        min_length=2,
+        max_length=1000,
         description="Lista de abstracts a agrupar (mínimo 2)"
     )
     method: LinkageMethod = Field(
@@ -60,14 +60,15 @@ class ClusteringRequest(BaseModel):
         description="Generar dendrograma visual"
     )
     
-    @validator('labels')
-    def validate_labels(cls, v, values):
+    @field_validator('labels')
+    @classmethod
+    def validate_labels(cls, v, info):
         """Valida que las etiquetas coincidan con el número de abstracts."""
-        if v is not None and 'abstracts' in values:
-            if len(v) != len(values['abstracts']):
+        if v is not None and 'abstracts' in info.data:
+            if len(v) != len(info.data['abstracts']):
                 raise ValueError(
                     f"Número de etiquetas ({len(v)}) no coincide con "
-                    f"número de abstracts ({len(values['abstracts'])})"
+                    f"número de abstracts ({len(info.data['abstracts'])})"
                 )
         return v
 
@@ -76,8 +77,8 @@ class CompareMethodsRequest(BaseModel):
     """Request para comparar múltiples métodos de clustering."""
     abstracts: List[str] = Field(
         ...,
-        min_items=2,
-        max_items=1000,
+        min_length=2,
+        max_length=1000,
         description="Lista de abstracts a agrupar"
     )
     num_clusters: Optional[int] = Field(

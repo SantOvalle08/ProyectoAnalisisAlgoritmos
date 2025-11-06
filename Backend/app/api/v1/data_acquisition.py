@@ -130,9 +130,11 @@ class JobStatusResponse(BaseModel):
     status: str
     progress: float
     current_source: Optional[str]
+    message: Optional[str] = Field(default=None, description="Mensaje descriptivo del estado actual")
     total_downloaded: int
     total_unique: int
     total_duplicates: int
+    total_publications: int = Field(default=0, description="Total de publicaciones únicas disponibles")
     started_at: Optional[str]
     completed_at: Optional[str]
     errors: List[str]
@@ -220,7 +222,19 @@ async def start_download(
         # Convertir sources a lista de strings
         sources = [source.value for source in request.sources]
         
-        # Iniciar descarga en background
+        # Generar job_id único
+        import uuid
+        job_id = f"job_{uuid.uuid4().hex[:12]}"
+        
+        # Registrar job inmediatamente con estado inicial
+        from app.services.data_acquisition.unified_downloader import DownloadJob
+        job = DownloadJob(job_id, request.query, sources, request.max_results_per_source)
+        job.status = "running"
+        from datetime import datetime
+        job.started_at = datetime.now()
+        downloader.active_jobs[job_id] = job
+        
+        # Iniciar descarga en background con el job_id generado
         async def download_task():
             try:
                 await downloader.download(
@@ -229,17 +243,18 @@ async def start_download(
                     max_results_per_source=request.max_results_per_source,
                     start_year=request.start_year,
                     end_year=request.end_year,
-                    export_formats=request.export_formats
+                    export_formats=request.export_formats,
+                    job_id=job_id  # Pasar el job_id generado
                 )
             except Exception as e:
                 logger.error(f"Error en download task: {e}")
+                # Actualizar estado del job a failed
+                if job_id in downloader.active_jobs:
+                    downloader.active_jobs[job_id].status = "failed"
+                    downloader.active_jobs[job_id].errors.append(str(e))
         
         # Agregar tarea a background
         background_tasks.add_task(download_task)
-        
-        # Generar job_id temporal (en producción usar el real del downloader)
-        import uuid
-        job_id = f"job_{uuid.uuid4().hex[:12]}"
         
         return DownloadResponse(
             success=True,
@@ -553,32 +568,32 @@ async def list_available_sources():
                 "id": "acm",
                 "name": "ACM Digital Library",
                 "description": "Publicaciones de ACM (Association for Computing Machinery)",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Ciencias de la Computación"
             },
             {
                 "id": "sage",
                 "name": "SAGE Publications",
                 "description": "Editorial académica con amplia cobertura",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Ciencias Sociales, Humanidades"
             },
             {
                 "id": "sciencedirect",
                 "name": "ScienceDirect",
                 "description": "Base de datos de Elsevier",
-                "available": False,
-                "requires_api_key": True,
-                "rate_limit": "Depende de suscripción",
+                "available": True,  # Cambiado a True para permitir uso
+                "requires_api_key": False,  # Web scraping no requiere API key
+                "rate_limit": "Rate limited por scraping",
                 "coverage": "Multidisciplinario (STM)"
             }
         ],
         "total_sources": 4,
-        "available_sources": 1
+        "available_sources": 4  # Actualizado a 4
     }
 
 

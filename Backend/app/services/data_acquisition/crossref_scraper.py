@@ -281,26 +281,48 @@ class CrossRefScraper(BaseScraper):
             publication_date = None
             publication_year = None
             
-            # Intentar con published-print primero
-            pub_date = raw_data.get('published-print', raw_data.get('published-online', {}))
-            if pub_date and 'date-parts' in pub_date:
-                date_parts = pub_date['date-parts'][0] if pub_date['date-parts'] else []
-                if date_parts:
-                    publication_year = date_parts[0]
-                    # Intentar construir fecha completa
-                    try:
-                        if len(date_parts) >= 3:
-                            publication_date = datetime(
-                                date_parts[0], 
-                                date_parts[1], 
-                                date_parts[2]
-                            ).date()
-                    except:
-                        pass
+            # Intentar con múltiples fuentes de fecha en orden de prioridad
+            date_sources = [
+                raw_data.get('published-print'),
+                raw_data.get('published-online'),
+                raw_data.get('published'),
+                raw_data.get('issued'),
+                raw_data.get('created')
+            ]
+            
+            for pub_date in date_sources:
+                if pub_date and 'date-parts' in pub_date:
+                    date_parts = pub_date['date-parts'][0] if pub_date['date-parts'] else []
+                    if date_parts and len(date_parts) > 0:
+                        publication_year = date_parts[0]
+                        # Intentar construir fecha completa
+                        try:
+                            if len(date_parts) >= 3:
+                                publication_date = datetime(
+                                    date_parts[0], 
+                                    date_parts[1], 
+                                    date_parts[2]
+                                ).date()
+                        except:
+                            pass
+                        break  # Usar la primera fecha válida encontrada
+            
+            # Log si no se encontró el año
+            if not publication_year:
+                logger.debug(f"No se pudo extraer año para: {title[:50]}...")
             
             # Extraer journal
             container_title = raw_data.get('container-title', [])
             journal = container_title[0] if container_title else None
+            
+            # Si no hay journal, intentar con short-container-title
+            if not journal:
+                short_container = raw_data.get('short-container-title', [])
+                journal = short_container[0] if short_container else None
+            
+            # Log si no se encontró el journal
+            if not journal:
+                logger.debug(f"No se pudo extraer journal para: {title[:50]}...")
             
             # Extraer keywords de subjects
             subjects = raw_data.get('subject', [])
@@ -351,6 +373,9 @@ class CrossRefScraper(BaseScraper):
             
             # Generar ID
             publication.id = publication.generate_id()
+            
+            # Log de verificación de campos importantes
+            logger.info(f"✓ Parseado: {title[:60]}... | Year: {publication_year or 'N/A'} | Journal: {journal[:40] if journal else 'N/A'}")
             
             return publication
         
