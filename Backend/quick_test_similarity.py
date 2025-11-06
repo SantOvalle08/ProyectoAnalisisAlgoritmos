@@ -68,40 +68,90 @@ async def test_similarity():
     results = {}
     
     # Lista de algoritmos a probar con sus instancias
-    algorithms = [
-        (LevenshteinSimilarity(), '1. Levenshtein Distance'),
-        (TFIDFCosineSimilarity(max_features=5000), '2. TF-IDF + Cosine Similarity'),
-        (JaccardSimilarity(remove_stopwords=True), '3. Jaccard Similarity'),
-        (NGramSimilarity(n=3, ngram_type='char'), '4. N-gramas'),
-        (BERTEmbeddingsSimilarity(model_name='bert-base-uncased'), '5. BERT Embeddings'),
-        (SentenceBERTSimilarity(model_name='all-MiniLM-L6-v2'), '6. Sentence-BERT'),
-    ]
+    algorithms = []
+    
+    # Algoritmos clásicos (siempre disponibles)
+    algorithms.append((LevenshteinSimilarity(), '1. Levenshtein Distance'))
+    algorithms.append((TFIDFCosineSimilarity(max_features=5000), '2. TF-IDF + Cosine Similarity'))
+    algorithms.append((JaccardSimilarity(remove_stopwords=True), '3. Jaccard Similarity'))
+    algorithms.append((NGramSimilarity(n=3, ngram_type='char'), '4. N-gramas'))
+    
+    # Algoritmos con IA (requieren dependencias adicionales)
+    print("🔍 Verificando disponibilidad de algoritmos con IA...\n")
+    
+    try:
+        print("   Inicializando BERT Embeddings...")
+        bert_algo = BERTEmbeddingsSimilarity(model_name='bert-base-uncased')
+        algorithms.append((bert_algo, '5. BERT Embeddings'))
+        print("   ✅ BERT disponible\n")
+    except RuntimeError as e:
+        print(f"   ⚠️  BERT no disponible: {e}\n")
+        algorithms.append((None, '5. BERT Embeddings'))
+    except Exception as e:
+        print(f"   ⚠️  Error al cargar BERT: {e}\n")
+        algorithms.append((None, '5. BERT Embeddings'))
+    
+    try:
+        print("   Inicializando Sentence-BERT...")
+        sbert_algo = SentenceBERTSimilarity(model_name='all-MiniLM-L6-v2')
+        algorithms.append((sbert_algo, '6. Sentence-BERT'))
+        print("   ✅ Sentence-BERT disponible\n")
+    except RuntimeError as e:
+        print(f"   ⚠️  Sentence-BERT no disponible: {e}\n")
+        algorithms.append((None, '6. Sentence-BERT'))
+    except Exception as e:
+        print(f"   ⚠️  Error al cargar Sentence-BERT: {e}\n")
+        algorithms.append((None, '6. Sentence-BERT'))
     
     total_start = time.time()
     
     for algorithm, algo_name in algorithms:
         print(f"🔄 {algo_name}...")
+        
+        # Saltar si el algoritmo no está disponible
+        if algorithm is None:
+            algo_key = algo_name.split('.')[0].strip()
+            results[algo_key] = {
+                'name': algo_name,
+                'status': 'skipped',
+                'error': 'Dependencias no instaladas (torch/transformers)'
+            }
+            print(f"   ⏭️  Omitido (dependencias no disponibles)\n")
+            continue
+        
         try:
             start = time.time()
-            # Calcular similitud usando el método del algoritmo
-            result = await algorithm.calculate_similarity_matrix(publications)
-            elapsed = time.time() - start
             
-            # La matriz es una lista de listas con las similitudes
-            matrix_size = len(result) if result else 0
+            # Crear matriz de similitud comparando todos los pares
+            n = len(publications)
+            matrix = [[0.0 for _ in range(n)] for _ in range(n)]
             
-            # Calcular pares únicos y encontrar mayor similitud
             max_similarity = 0.0
             max_pair = None
             pairs_count = 0
             
-            for i in range(len(result)):
-                for j in range(i+1, len(result)):
+            # Comparar cada par de publicaciones
+            for i in range(n):
+                for j in range(i+1, n):
                     pairs_count += 1
-                    sim_value = result[i][j]
+                    
+                    # Combinar título + abstract para comparación
+                    text1 = f"{publications[i].title or ''} {publications[i].abstract or ''}".strip()
+                    text2 = f"{publications[j].title or ''} {publications[j].abstract or ''}".strip()
+                    
+                    # Calcular similitud
+                    sim_value = algorithm.calculate_similarity(text1, text2)
+                    
+                    # Guardar en matriz (simétrica)
+                    matrix[i][j] = sim_value
+                    matrix[j][i] = sim_value
+                    
                     if sim_value > max_similarity:
                         max_similarity = sim_value
                         max_pair = (i, j)
+            
+            elapsed = time.time() - start
+            matrix_size = n
             
             # Guardar resultado
             algo_key = algo_name.split('.')[0].strip()
@@ -141,9 +191,11 @@ async def test_similarity():
     print("="*70 + "\n")
     
     success_count = sum(1 for r in results.values() if r['status'] == 'success')
-    error_count = len(results) - success_count
+    skipped_count = sum(1 for r in results.values() if r['status'] == 'skipped')
+    error_count = len(results) - success_count - skipped_count
     
     print(f"✅ Algoritmos exitosos: {success_count}/{len(algorithms)}")
+    print(f"⏭️  Algoritmos omitidos: {skipped_count}/{len(algorithms)} (dependencias no instaladas)")
     print(f"❌ Algoritmos con error: {error_count}/{len(algorithms)}")
     print(f"⏱️  Tiempo total: {total_elapsed:.2f}s\n")
     
@@ -156,6 +208,9 @@ async def test_similarity():
         if result_data['status'] == 'success':
             tiempo = f"{result_data['execution_time']:.2f}s"
             estado = "✅ OK"
+        elif result_data['status'] == 'skipped':
+            tiempo = "N/A"
+            estado = "⏭️  OMITIDO"
         else:
             tiempo = "N/A"
             estado = "❌ ERROR"
@@ -186,13 +241,19 @@ async def test_similarity():
     print("💡 RECOMENDACIONES")
     print("="*70 + "\n")
     
-    if success_count == len(algorithms):
-        print("🎉 ¡EXCELENTE! Todos los algoritmos funcionan correctamente")
-        print("✅ El sistema está listo para análisis bibliométrico completo")
+    if success_count >= 4:
+        print("🎉 ¡EXCELENTE! Los algoritmos clásicos funcionan correctamente")
+        print("✅ El sistema está listo para análisis bibliométrico académico")
+        
+        if skipped_count > 0:
+            print(f"\n⚠️  {skipped_count} algoritmos con IA fueron omitidos (requieren torch/transformers)")
+            print("💡 Para usarlos, instala: pip install torch transformers sentence-transformers")
+        
         print("\n📈 Próximos pasos:")
         print("   1. Descargar más publicaciones (50-100)")
         print("   2. Ejecutar análisis con dataset completo")
         print("   3. Comparar resultados de diferentes algoritmos")
+        print("   4. (Opcional) Instalar dependencias para algoritmos con IA")
     else:
         print("⚠️  Algunos algoritmos presentaron errores")
         print("💡 Revisa los logs de error arriba para más detalles")
