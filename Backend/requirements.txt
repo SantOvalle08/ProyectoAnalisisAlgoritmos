@@ -1,5 +1,5 @@
 # ===== CORE FRAMEWORK =====
-fastapi==0.120.2
+fastapi==0.119.1
 uvicorn[standard]==0.31.0
 python-multipart==0.0.9
 
@@ -15,20 +15,20 @@ celery==5.4.0
 
 # ===== MACHINE LEARNING & NLP =====
 # Core ML Libraries
-scikit-learn==1.7.2
-pandas==2.3.3
-numpy==2.3.4
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==2.1.2
 scipy==1.16.3
 
-# Deep Learning & Transformers (Latest versions from search)
-torch==2.4.1
-torchvision==0.19.1
-transformers==4.45.2
-sentence-transformers==5.1.0
+# Deep Learning & Transformers (Latest versions installed)
+torch==2.9.0
+torchvision==0.24.0
+transformers==4.57.1
+sentence-transformers==5.1.2
 
 # NLP Processing
 nltk==3.9.2
-spacy==3.8.2
+spacy==3.8.7
 gensim==4.3.3
 python-Levenshtein==0.26.0
 
@@ -43,7 +43,7 @@ habanero==1.2.6
 chardet==5.2.0
 
 # Web Scraping
-beautifulsoup4==4.12.3
+beautifulsoup4==4.14.2
 lxml==5.1.0
 scrapy==2.11.2
 requests==2.32.3
@@ -51,7 +51,7 @@ aiohttp==3.13.2
 
 # Browser Automation (for bypassing Cloudflare/anti-bot protection)
 setuptools>=65.0.0  # Required for undetected-chromedriver in Python 3.12+
-selenium==4.26.1
+selenium==4.38.0
 webdriver-manager==4.0.2
 undetected-chromedriver==3.5.5
 
@@ -67,7 +67,7 @@ networkx==3.5
 umap-learn==0.5.6
 
 # ===== VALIDATION & CONFIGURATION =====
-pydantic==2.9.2
+pydantic==2.12.3
 pydantic-settings==2.6.0
 python-dotenv==1.0.1
 
