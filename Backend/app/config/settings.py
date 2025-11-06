@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     acm_password: Optional[str] = Field(default=None, description="Contraseña de ACM Digital Library")
     sage_username: Optional[str] = Field(default=None, description="Usuario de SAGE Publications")
     sage_password: Optional[str] = Field(default=None, description="Contraseña de SAGE Publications")
+    sage_institutional_url: Optional[str] = Field(default=None, description="URL del proxy institucional de SAGE")
     ieee_username: Optional[str] = Field(default=None, description="Usuario de IEEE Xplore")
     ieee_password: Optional[str] = Field(default=None, description="Contraseña de IEEE Xplore")
     
@@ -109,9 +110,18 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"  # Ignorar variables extras en .env
 
 # Crear instancia global de configuración
-settings = Settings()
+# Buscar .env en el directorio Backend
+import os
+from pathlib import Path
+
+# Obtener ruta del archivo .env (relativo a este archivo settings.py)
+env_path = Path(__file__).parent.parent.parent / ".env"
+
+# Crear settings con la ruta correcta al .env
+settings = Settings(_env_file=str(env_path) if env_path.exists() else None)
 
 def get_settings() -> Settings:
     """

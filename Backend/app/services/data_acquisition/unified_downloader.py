@@ -205,11 +205,17 @@ class UnifiedDownloader:
             for source in valid_sources:
                 scraper_class = self.available_scrapers[source]
                 
-                # Pasar API key a ScienceDirect si está disponible
+                # Configurar scrapers con credenciales específicas
                 if source == 'sciencedirect':
                     from app.config.settings import settings
                     scrapers[source] = scraper_class(
                         api_key=settings.elsevier_api_key,
+                        rate_limit=self.rate_limit
+                    )
+                elif source == 'sage':
+                    from app.config.settings import settings
+                    scrapers[source] = scraper_class(
+                        institutional_url=settings.sage_institutional_url,
                         rate_limit=self.rate_limit
                     )
                 else:
