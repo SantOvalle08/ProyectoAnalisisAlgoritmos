@@ -204,7 +204,17 @@ class UnifiedDownloader:
             scrapers: Dict[str, BaseScraper] = {}
             for source in valid_sources:
                 scraper_class = self.available_scrapers[source]
-                scrapers[source] = scraper_class(rate_limit=self.rate_limit)
+                
+                # Pasar API key a ScienceDirect si está disponible
+                if source == 'sciencedirect':
+                    from app.config.settings import settings
+                    scrapers[source] = scraper_class(
+                        api_key=settings.elsevier_api_key,
+                        rate_limit=self.rate_limit
+                    )
+                else:
+                    scrapers[source] = scraper_class(rate_limit=self.rate_limit)
+                
                 logger.info(f"Scraper inicializado: {source}")
             
             # Calcular progreso por etapa
