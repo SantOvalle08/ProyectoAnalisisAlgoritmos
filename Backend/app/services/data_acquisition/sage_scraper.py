@@ -162,7 +162,16 @@ class SAGEScraper(BaseScraper):
                         logger.error(f"Error en SAGE: HTTP {response.status}")
                         break
                     
-                    html = await response.text()
+                    # Intentar leer con encoding correcto
+                    try:
+                        html = await response.text(encoding='utf-8')
+                    except UnicodeDecodeError:
+                        # Si falla UTF-8, intentar con latin-1
+                        try:
+                            html = await response.text(encoding='latin-1')
+                        except:
+                            # Último recurso: ignorar errores
+                            html = await response.text(encoding='utf-8', errors='ignore')
                     
                     # Parsear resultados
                     soup = BeautifulSoup(html, 'html.parser')

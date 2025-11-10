@@ -81,6 +81,9 @@ class BaseScraper(ABC):
         self.downloaded_count = 0
         self.errors: List[str] = []
         
+        # Para rate limiting
+        self._last_request_time = 0.0
+        
         logger.info(f"Scraper inicializado para: {source_name}")
     
     @abstractmethod
@@ -302,6 +305,26 @@ class BaseScraper(ABC):
         self.downloaded_count = 0
         self.errors = []
         logger.info(f"Scraper {self.source_name} reiniciado")
+    
+    async def _respect_rate_limit(self):
+        """
+        Asegura que se respete el límite de peticiones por segundo.
+        """
+        import time
+        import asyncio
+        
+        if self.rate_limit <= 0:
+            return
+        
+        current_time = time.time()
+        time_since_last_request = current_time - self._last_request_time
+        min_interval = 1.0 / self.rate_limit
+        
+        if time_since_last_request < min_interval:
+            wait_time = min_interval - time_since_last_request
+            await asyncio.sleep(wait_time)
+        
+        self._last_request_time = time.time()
     
     async def validate_connection(self) -> bool:
         """
