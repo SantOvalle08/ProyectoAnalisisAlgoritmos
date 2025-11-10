@@ -393,6 +393,31 @@ python -m pytest --cov=app --cov-report=html
 # Benchmarks de performance
 python -m pytest tests/test_benchmarks.py -v
 ```
+## 🔧 Problemas Técnicos Resueltos
+
+Durante el desarrollo, se identificaron y corrigieron los siguientes issues críticos:
+
+### **Performance y Precisión**
+- **Tiempos de ejecución en 0.000s** → Implementado `time.perf_counter()` con precisión de microsegundos
+- **Librerías desactualizadas** → Actualizadas 15+ dependencias a versiones recientes
+- **Rate limiting insuficiente** → Agregado `asyncio.sleep()` controlado en scrapers
+
+### **Integración de Fuentes**
+- **Fuentes ACM/SAGE/ScienceDirect deshabilitadas** → Habilitadas con configuración completa
+- **API Key ScienceDirect inválida** → Configurada API key funcional
+- **Acceso institucional SAGE** → Proxy universitario configurado (`search-sagepub-com.crai.referencistas.com`)
+- **Bypass Cloudflare ACM** → Implementado Selenium con `undetected-chromedriver`
+
+### **UI/UX y Funcionalidad**
+- **Campos invisibles en interfaz** → Mejorado contraste y estilos CSS
+- **Un solo cargador en similitud** → Implementados dos cargadores independientes
+- **Campos year/journal faltantes** → Sistema de fallbacks múltiples para extracción
+- **Error 404 en subida de archivos** → Corregidas rutas API (`/upload/parse` → `/api/v1/upload/parse`)
+
+### **Testing y Validación**
+- **Scripts de prueba específicos** → `quick_test_similarity.py`, `quick_test_clustering_standalone.py`
+- **Validación de datos MOCK** → Sistema para detectar datos simulados vs reales
+- **Encoding UTF-8** → Corregidos problemas de caracteres especiales
 
 ### **Categorías de Tests**
 - 🧪 **API Tests:** Validación de endpoints REST
@@ -401,11 +426,32 @@ python -m pytest tests/test_benchmarks.py -v
 - ⚡ **Performance Tests:** Benchmarks de algoritmos
 - 📊 **Coverage Reports:** Reportes HTML en `htmlcov/`
 
+## ⚙️ Configuraciones Especiales
+
+### **API Keys Configuradas**
+```bash
+# ScienceDirect (Elsevier)
+ELSEVIER_API_KEY="ebffb30f5cb764d516cb320d5762363e"
+
+# SAGE (Acceso Institucional)
+SAGE_INSTITUTIONAL_URL="https://search-sagepub-com.crai.referencistas.com/"
+
+# CrossRef (Rate limiting mejorado)
+CROSSREF_EMAIL="santiago.ovalle@uniquindio.edu.co"
+
+# Configuración anti-detección
+SELENIUM_HEADLESS=false  # Visible para debugging
+SELENIUM_PAGE_LOAD_TIMEOUT=60
+SELENIUM_IMPLICIT_WAIT=10
+
 ## 📚 Documentación Adicional
 
-- **[📋 Requerimientos.md](Requerimientos.md)** - Especificación completa de requerimientos
-- **[🔌 API Docs](http://localhost:8000/docs)** - Documentación interactiva de APIs
-- **[📊 Benchmarks](Backend/tests/test_benchmarks.py)** - Métricas de performance detalladas
+- **[📋 Requerimientos.md](Requerimientos.md)** - Especificación completa
+- **[🔌 API Docs](http://localhost:8000/docs)** - Documentación interactiva
+- **[📊 Benchmarks](Backend/tests/test_benchmarks.py)** - Métricas detalladas
+- **[🎯 TODO_ACADEMICO.md](TODO_ACADEMICO.md)** - Lista de tareas completadas
+- **[📖 GUIA_USO.md](GUIA_USO.md)** - Guía completa de usuario (500+ líneas)
+- **[🔧 SELENIUM_SETUP.md](Backend/SELENIUM_SETUP.md)** - Configuración Selenium detallada
 
 ## Contribución y Desarrollo
 
@@ -429,6 +475,8 @@ python -m pytest tests/test_benchmarks.py -v
 ### **Autores**
 - **Santiago Ovalle Cortés** - Desarrollo Backend/Frontend y UI/UX
 - **Juan Sebastián Noreña** - Desarrollo Backend & ML
+- **Santiago Londoño** - Desarrollo, Documentación
+
 ### **Supervisor Académico**
 - **Carlos Andres Flores Villaraga** - Docente del curso
 
