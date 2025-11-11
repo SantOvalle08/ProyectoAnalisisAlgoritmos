@@ -52,14 +52,21 @@ class TimelineChart:
         Returns:
             Año como entero o None si no se encuentra
         """
-        # Intentar campo 'year'
+        # PRIORIDAD 1: Intentar campo 'publication_year' (más común en datos reales)
+        if 'publication_year' in publication and publication['publication_year']:
+            try:
+                return int(publication['publication_year'])
+            except (ValueError, TypeError):
+                pass
+        
+        # PRIORIDAD 2: Intentar campo 'year'
         if 'year' in publication and publication['year']:
             try:
                 return int(publication['year'])
             except (ValueError, TypeError):
                 pass
         
-        # Intentar campo 'published_date'
+        # PRIORIDAD 3: Intentar campo 'published_date'
         if 'published_date' in publication and publication['published_date']:
             try:
                 date_str = publication['published_date']
@@ -75,7 +82,7 @@ class TimelineChart:
             except (ValueError, TypeError, IndexError):
                 pass
         
-        # Intentar campo 'publication_date'
+        # PRIORIDAD 4: Intentar campo 'publication_date'
         if 'publication_date' in publication and publication['publication_date']:
             try:
                 date_str = publication['publication_date']
