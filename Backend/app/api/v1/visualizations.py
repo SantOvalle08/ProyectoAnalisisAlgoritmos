@@ -44,7 +44,10 @@ class PublicationInput(BaseModel):
     keywords: Optional[List[str]] = None
     authors: Optional[List[Dict[str, Any]]] = None
     year: Optional[int] = None
+    publication_year: Optional[int] = None  # Campo adicional para datos reales
     journal: Optional[str] = None
+    publication_date: Optional[str] = None  # Campo de fecha completa
+    published_date: Optional[str] = None    # Campo alternativo de fecha
 
 
 class WordCloudRequest(BaseModel):

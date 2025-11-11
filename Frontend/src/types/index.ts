@@ -5,9 +5,11 @@ export interface Publication {
   abstract?: string;
   authors?: Author[];
   keywords?: string[];
-  year?: string;
+  year?: string | number;
+  publication_year?: string | number;  // Campo adicional para datos reales
   journal?: string;
   published_date?: string;
+  publication_date?: string;  // Campo alternativo de fecha
   venue?: string;
 }
 
