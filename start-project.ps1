@@ -5,22 +5,25 @@ Write-Host "Iniciando Proyecto de Analisis de Algoritmos..." -ForegroundColor Cy
 Write-Host ""
 
 # Verificar que estamos en el directorio correcto
-$projectRoot = "C:\Users\MI PC\Desktop\CODE\ProyectoAnalisisAlgoritmos"
+# Usar la ruta del script como raíz del proyecto (funciona aunque el usuario mueva la carpeta)
+$projectRoot = $PSScriptRoot
 if (-not (Test-Path $projectRoot)) {
-    Write-Host "Error: No se encuentra el directorio del proyecto" -ForegroundColor Red
+    Write-Host "Error: No se encuentra el directorio del proyecto: $projectRoot" -ForegroundColor Red
     exit 1
 }
 
 # Iniciar Backend
 Write-Host "Iniciando Backend (FastAPI)..." -ForegroundColor Yellow
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\Backend'; python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+$backendCmd = "cd `"$projectRoot\Backend`"; python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", $backendCmd
 
 # Esperar 3 segundos para que el backend inicie
 Start-Sleep -Seconds 3
 
 # Iniciar Frontend
 Write-Host "Iniciando Frontend (Vite + React)..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\Frontend'; npm run dev"
+$frontendCmd = "cd `"$projectRoot\Frontend`"; npm run dev"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendCmd
 
 Write-Host ""
 Write-Host "Proyecto iniciado exitosamente!" -ForegroundColor Green
